@@ -14,24 +14,10 @@ public class BingoDirector : MonoBehaviour
 
     public LineData lineData;
 
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void AnnounceNumber(int Number)
     {
-        if(NumberAnnouncedDelegate != null)
-        NumberAnnouncedDelegate(Number);
+        if (NumberAnnouncedDelegate != null)
+            NumberAnnouncedDelegate(Number);
     }
 
     public void CheckBingo()
@@ -44,5 +30,6 @@ public class BingoDirector : MonoBehaviour
     {
         return lineData.bingoLineData;
     }
+
 
 }

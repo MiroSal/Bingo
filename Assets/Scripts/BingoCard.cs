@@ -5,20 +5,18 @@ using UnityEngine.UI;
 
 public class BingoCard : MonoBehaviour
 {
-
+    [Header("Prefab for the ball in Bingocard")]
     public GameObject BallPrefab;
 
     private BingoDirector bingoDirector;
-
-    private GameObject[] Balls = new GameObject[25];
-
-    ArrayLayout[] lineData;
-
-    public Dictionary<int, List<GameObject>> possibleLines = new Dictionary<int, List<GameObject>>();
+    private Dictionary<int, List<GameObject>> possibleLines = new Dictionary<int, List<GameObject>>();
 
     private void Awake()
     {
+
         bingoDirector = FindObjectOfType<BingoDirector>();
+        ArrayLayout[] lineData = new ArrayLayout[0];
+        GameObject[] Balls = new GameObject[25];
 
         if (bingoDirector != null)
             lineData = bingoDirector.GetLines();
@@ -43,7 +41,6 @@ public class BingoCard : MonoBehaviour
                 {
                     for (int k = 0; k <= lineData[j].rows[i].row.Length - 1; k++)
                     {
-                        Debug.Log(index);
                         if (index > 24)
                             break;
 
@@ -52,11 +49,6 @@ public class BingoCard : MonoBehaviour
                             GameObject ob = Balls[index];
 
                             temp.Add(ob);
-                            Image image = ob.GetComponent<Image>();
-                            if (image != null)
-                            {
-                                image.color = Color.blue;
-                            }
                         }
                         index++;
                     }
@@ -71,18 +63,18 @@ public class BingoCard : MonoBehaviour
     void CheckBingo()
     {
         bool bIsBingo = false;
-        List<GameObject> temp = new List<GameObject>(); ;
+        List<GameObject> temp = new List<GameObject>();
 
         foreach (KeyValuePair<int, List<GameObject>> line in possibleLines)
         {
             temp = new List<GameObject>();
+            bIsBingo = true;
             foreach (GameObject obj in line.Value)
             {
-                bIsBingo = true;
-
                 BingoCardBall ball = obj.GetComponent<BingoCardBall>();
                 if (ball == null)
                     break;
+
                 if (!ball.bIsMarked)
                 {
                     bIsBingo = false;
@@ -101,10 +93,12 @@ public class BingoCard : MonoBehaviour
 
             foreach (GameObject item in temp)
             {
+                if (item == null)
+                    continue;
+
                 Image image = item.GetComponent<Image>();
                 if (image != null)
                 {
-                    Debug.Log("Bingo: " + temp.Count);
                     image.color = Color.blue;
                 }
             }

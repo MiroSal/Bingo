@@ -5,29 +5,18 @@ using UnityEngine.UI;
 
 public class NumberAnnouncer : MonoBehaviour
 {
-    public Text NumberText;
-
-
+    private Text NumberText;
     private BingoDirector bingoDirector;
 
     private void Awake()
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        NumberText = GetComponentInChildren<Text>();
     }
 
     public void GenerateNextNumber()
     {
+        //TODO make sure that there is no duplicate number created
         int nextnumber = (int)Random.Range(0, 75);
         NumberText.text = nextnumber.ToString();
 

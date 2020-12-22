@@ -23,7 +23,8 @@ public class BingoCardBall : MonoBehaviour
     void Start()
     {
         randomNumber = (int)Random.Range(0f, 75f);
-        NumberText.text = randomNumber.ToString();
+        if (NumberText != null)
+            NumberText.text = randomNumber.ToString();
 
     }
 
@@ -38,8 +39,15 @@ public class BingoCardBall : MonoBehaviour
         if (randomNumber == number)
         {
             bIsMarked = true;
-            GetComponent<Image>().color = Color.green;
 
+            Image image = GetComponent<Image>();
+            if (image != null)
+                image.color = Color.green;
         }
+    }
+
+    private void OnDisable()
+    {
+        BingoDirector.NumberAnnouncedDelegate -= CheckNumber;
     }
 }
