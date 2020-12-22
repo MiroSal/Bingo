@@ -10,31 +10,43 @@ public class NumberAnnouncer : MonoBehaviour
 
     public GameObject BallPrefap;
 
+    List<int> numbers = new List<int>();
+
     private void Awake()
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
+        for (int i = 0; i <= 75; i++)
+        {
+            numbers.Add(i);
+        }
         //NumberText = GetComponentInChildren<Text>();
     }
 
     public void GenerateNextNumber()
     {
         //TODO make sure that there is no duplicate number created
-        int nextnumber = (int)Random.Range(0, 75);
-
-        if (BallPrefap != null)
+        if (numbers.Count > 0)
         {
-            GameObject obj = Instantiate(BallPrefap);
-            if (obj != null)
-            {
-                obj.transform.SetParent(this.transform, false);
-                Text text = obj.GetComponentInChildren<Text>();
-                if(text= null)
-                text.text = nextnumber.ToString();
-            }
-        }
+            int random = (int)Random.Range(0, numbers.Count - 1);
+            int nextnumber = numbers[random];
+            numbers.RemoveAt(random);
 
-        if (bingoDirector != null)
-            bingoDirector.AnnounceNumber(nextnumber);
+            if (BallPrefap != null)
+            {
+                GameObject obj = Instantiate(BallPrefap);
+                if (obj != null)
+                {
+                    obj.transform.SetParent(this.transform, false);
+                    Text text = obj.GetComponentInChildren<Text>();
+                    if (text != null)
+                        text.text = nextnumber.ToString();
+                }
+            }
+
+            if (bingoDirector != null)
+                bingoDirector.AnnounceNumber(nextnumber);
+
+        }
 
         CheckBingo();
     }

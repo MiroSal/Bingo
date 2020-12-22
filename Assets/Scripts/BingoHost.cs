@@ -21,11 +21,14 @@ public class BingoHost : MonoBehaviour
     public float MachineTime = 1;
     public float PipeTime = 1;
 
+    public GameObject SmokeEffect;
+
     private float timer = 0;
 
     private HostStateEnum State;
     private NumberAnnouncer numberAnnouncer = null;
 
+    private ParticleSystem SmokeParticleSystem = null;
 
     void OnDrawGizmosSelected()
     {
@@ -42,6 +45,15 @@ public class BingoHost : MonoBehaviour
     {
         numberAnnouncer = FindObjectOfType<NumberAnnouncer>();
         State = HostStateEnum.HS_Idle;
+
+        if (SmokeEffect != null)
+        {
+            SmokeParticleSystem = SmokeEffect.GetComponent<ParticleSystem>();
+        }
+        else
+        {
+            Debug.LogWarning("SmokeEffectPrefab is null");
+        }
     }
 
     // Start is called before the first frame update
@@ -73,7 +85,7 @@ public class BingoHost : MonoBehaviour
                     timer = IdleTime;
                     gameObject.transform.position = IdleLocation;
                     State = HostStateEnum.HS_Idle;
-                    if(numberAnnouncer != null)
+                    if (numberAnnouncer != null)
                     {
                         numberAnnouncer.GenerateNextNumber();
                     }
@@ -83,6 +95,7 @@ public class BingoHost : MonoBehaviour
                 default:
                     break;
             }
+            SmokeParticleSystem.Play();
         }
     }
 }

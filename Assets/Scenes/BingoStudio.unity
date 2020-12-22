@@ -840,6 +840,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5114823193f4d6418ec37510a5fd628, type: 3}
+--- !u!4 &1049269847 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7309825007482771183, guid: efd798810986c9d4e8ab8a14fdb43f36,
+    type: 3}
+  m_PrefabInstance: {fileID: 1505710714}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1082370377
 GameObject:
   m_ObjectHideFlags: 0
@@ -1287,6 +1293,7 @@ MonoBehaviour:
   IdleTime: 1
   MachineTime: 1
   PipeTime: 1
+  SmokeEffect: {fileID: 2043558790}
 --- !u!4 &1540004973 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6c9afeca85a31df43b1d725040670f3d,
@@ -1563,7 +1570,7 @@ MonoBehaviour:
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1000000
+  m_DynamicPixelsPerUnit: 375000
   m_PresetInfoIsWorld: 1
 --- !u!223 &1689672202
 Canvas:
@@ -1606,7 +1613,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 0.001, y: 0.001}
+  m_CellSize: {x: 0.0025, y: 0.0025}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -2132,3 +2139,78 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1956529351}
   m_CullTransparentMesh: 1
+--- !u!1001 &2043558789
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1049269847}
+    m_Modifications:
+    - target: {fileID: 2113660005139378960, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_Name
+      value: SmokePuffEffect01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.4579999
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.00000005960465
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113660005139379181, guid: a5914720660154c4cadcba03b18f50ba,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a5914720660154c4cadcba03b18f50ba, type: 3}
+--- !u!1 &2043558790 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2113660005139378960, guid: a5914720660154c4cadcba03b18f50ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 2043558789}
+  m_PrefabAsset: {fileID: 0}
