@@ -2,6 +2,81 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct BingoBallData
+{
+    public int CurrentValue;
+    public FBingoTicketTextEnum BingoTicketTextEnum;
+
+    public BingoBallData(int BallValue)
+    {
+        CurrentValue = BallValue;
+        if (CurrentValue <= 15 && CurrentValue > 0)
+        {
+            BingoTicketTextEnum = FBingoTicketTextEnum.B;
+        }
+        else if (CurrentValue <= 30 && CurrentValue > 15)
+        {
+            BingoTicketTextEnum = FBingoTicketTextEnum.I;
+        }
+        else if (CurrentValue <= 45 && CurrentValue > 30)
+        {
+            BingoTicketTextEnum = FBingoTicketTextEnum.N;
+        }
+        else if (CurrentValue <= 60 && CurrentValue > 45)
+        {
+            BingoTicketTextEnum = FBingoTicketTextEnum.G;
+        }
+        else if (CurrentValue <= 75 && CurrentValue > 60)
+        {
+            BingoTicketTextEnum = FBingoTicketTextEnum.O;
+        }
+        else
+        {
+            BingoTicketTextEnum = FBingoTicketTextEnum.None;
+        }
+    }
+
+    public BingoBallData(FBingoTicketTextEnum bingoTicketTextEnum, List<int> IgnoredNumbers)
+    {
+        int minNumber = 0;
+        int maxNumber = 0;
+        BingoTicketTextEnum = bingoTicketTextEnum;
+        switch (BingoTicketTextEnum)
+        {
+            case FBingoTicketTextEnum.B:
+                minNumber = 1;
+                maxNumber = 15;
+                break;
+            case FBingoTicketTextEnum.I:
+                minNumber = 16;
+                maxNumber = 30;
+                break;
+            case FBingoTicketTextEnum.N:
+                minNumber = 31;
+                maxNumber = 45;
+                break;
+            case FBingoTicketTextEnum.G:
+                minNumber = 46;
+                maxNumber = 60;
+                break;
+            case FBingoTicketTextEnum.O:
+                minNumber = 61;
+                maxNumber = 75;
+                break;
+            case FBingoTicketTextEnum.None:
+                Debug.Log("This should never happen!!");
+                break;
+            default:
+                break;
+        }
+
+        do
+        {
+            CurrentValue = (int)Random.Range(minNumber, maxNumber);
+        } while (IgnoredNumbers.Contains(CurrentValue));
+    }
+}
+
 public class BingoDirector : MonoBehaviour
 {
     //Delegates/events

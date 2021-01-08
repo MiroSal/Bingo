@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class BingoCardBall : MonoBehaviour
 {
     public Text NumberText;
@@ -11,7 +10,7 @@ public class BingoCardBall : MonoBehaviour
     //TODO name this properly
     public bool bIsMarked = false;
 
-    int randomNumber;
+    private BingoBallData ballData;
 
     private void Awake()
     {
@@ -22,10 +21,14 @@ public class BingoCardBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        randomNumber = (int)Random.Range(0f, 75f);
-        if (NumberText != null)
-            NumberText.text = randomNumber.ToString();
+    }
 
+    public void Init(BingoBallData BallData)
+    {
+        ballData = BallData;
+
+        if (NumberText != null)
+            NumberText.text = ballData.CurrentValue.ToString();
     }
 
     // Update is called once per frame
@@ -36,7 +39,7 @@ public class BingoCardBall : MonoBehaviour
 
     void CheckNumber(int number)
     {
-        if (randomNumber == number)
+        if (ballData.CurrentValue == number)
         {
             bIsMarked = true;
 

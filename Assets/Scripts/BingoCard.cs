@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum FBingoTicketTextEnum
+{
+    B,
+    I,
+    N,
+    G,
+    O,
+    None
+}
+
 public class BingoCard : MonoBehaviour
 {
     [Header("Prefab for the ball in Bingocard")]
@@ -12,6 +22,8 @@ public class BingoCard : MonoBehaviour
     private GameObject[] Balls = new GameObject[25];
     private Dictionary<int, List<int>> possibleLines = new Dictionary<int, List<int>>();
 
+    private FBingoTicketTextEnum BingoTicketTextEnum = FBingoTicketTextEnum.B;
+
     private void Awake()
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
@@ -19,12 +31,24 @@ public class BingoCard : MonoBehaviour
         if (bingoDirector != null)
             possibleLines = bingoDirector.GetWantedLines();
 
+        List<int> AddedNumbers = new List<int>();
+        BingoBallData ballData;
+
+
         //create balls to card
         for (int i = 0; i < 25; i++)
         {
             Balls[i] = Instantiate(BallPrefab);
+            ballData = new BingoBallData(BingoTicketTextEnum, AddedNumbers);
+            Balls[i].GetComponent<BingoCardBall>().Init(ballData);
             if (Balls[i] != null)
                 Balls[i].transform.SetParent(this.transform, false);
+
+            BingoTicketTextEnum++;
+            if (BingoTicketTextEnum == FBingoTicketTextEnum.None)
+                BingoTicketTextEnum = FBingoTicketTextEnum.B;
+
+            AddedNumbers.Add(ballData.CurrentValue);
         }
 
         BingoDirector.CheckBingoDelegate += CheckBingo;

@@ -15,7 +15,7 @@ public class NumberAnnouncer : MonoBehaviour
     private void Awake()
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
-        for (int i = 0; i <= 75; i++)
+        for (int i = 1; i <= 75; i++)
         {
             numbers.Add(i);
         }
@@ -24,11 +24,10 @@ public class NumberAnnouncer : MonoBehaviour
 
     public void GenerateNextNumber()
     {
-        //TODO make sure that there is no duplicate number created
         if (numbers.Count > 0)
         {
             int random = (int)Random.Range(0, numbers.Count - 1);
-            int nextnumber = numbers[random];
+            BingoBallData nextBall = new BingoBallData(numbers[random]);
             numbers.RemoveAt(random);
 
             if (BallPrefap != null)
@@ -39,12 +38,12 @@ public class NumberAnnouncer : MonoBehaviour
                     obj.transform.SetParent(this.transform, false);
                     Text text = obj.GetComponentInChildren<Text>();
                     if (text != null)
-                        text.text = nextnumber.ToString();
+                        text.text = nextBall.BingoTicketTextEnum.ToString()+ nextBall.CurrentValue.ToString();
                 }
             }
 
             if (bingoDirector != null)
-                bingoDirector.AnnounceNumber(nextnumber);
+                bingoDirector.AnnounceNumber(nextBall.CurrentValue);
 
         }
 
