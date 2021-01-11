@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum FBingoTicketTextEnum
+public enum FBingoBallPrefixEnum
 {
     B,
     I,
@@ -16,39 +16,44 @@ public enum FBingoTicketTextEnum
 public class BingoCard : MonoBehaviour
 {
     [Header("Prefab for the ball in Bingocard")]
-    public GameObject BallPrefab;
+    public GameObject BallPrefab = null;
 
     private BingoDirector bingoDirector = null;
-    private GameObject[] Balls = new GameObject[25];
+    private GameObject[] balls = new GameObject[25];
     private Dictionary<int, List<int>> possibleLines = new Dictionary<int, List<int>>();
 
-    private FBingoTicketTextEnum BingoTicketTextEnum = FBingoTicketTextEnum.B;
+    private FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B;
+
 
     private void Awake()
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
 
         if (bingoDirector != null)
-            possibleLines = bingoDirector.GetWantedLines();
+        possibleLines = bingoDirector.GetWantedLines();
 
-        List<int> AddedNumbers = new List<int>();
+        List<int> addedNumbers = new List<int>();
         BingoBallData ballData;
-
 
         //create balls to card
         for (int i = 0; i < 25; i++)
         {
-            Balls[i] = Instantiate(BallPrefab);
-            ballData = new BingoBallData(BingoTicketTextEnum, AddedNumbers);
-            Balls[i].GetComponent<BingoCardBall>().Init(ballData);
-            if (Balls[i] != null)
-                Balls[i].transform.SetParent(this.transform, false);
+            balls[i] = Instantiate(BallPrefab);
+            if (balls[i] == null) { Debug.Log("instantiate was fail."); continue; }
 
-            BingoTicketTextEnum++;
-            if (BingoTicketTextEnum == FBingoTicketTextEnum.None)
-                BingoTicketTextEnum = FBingoTicketTextEnum.B;
+            BingoCardBall bingoCardBall = balls[i].GetComponent<BingoCardBall>();
+            if (bingoCardBall == null) { Debug.Log("BingoCardBall component was not found"); continue; }
 
-            AddedNumbers.Add(ballData.CurrentValue);
+            ballData = new BingoBallData(bingoBallPrefixEnum, addedNumbers);
+            bingoCardBall.Init(ballData);
+
+            balls[i].transform.SetParent(this.transform, false);
+
+            bingoBallPrefixEnum++;
+            if (bingoBallPrefixEnum == FBingoBallPrefixEnum.None)
+                bingoBallPrefixEnum = FBingoBallPrefixEnum.B;
+
+            addedNumbers.Add(ballData.CurrentValue);
         }
 
         BingoDirector.CheckBingoDelegate += CheckBingo;
@@ -57,26 +62,26 @@ public class BingoCard : MonoBehaviour
     void CheckBingo()
     {
         bool bIsBingo = false;
-        List<BingoCardBall> BingoLine = new List<BingoCardBall>();
+        List<BingoCardBall> bingoLine = new List<BingoCardBall>();
 
-        foreach (KeyValuePair<int, List<int>> PossibleLine in possibleLines)//possibleLines
+        foreach (KeyValuePair<int, List<int>> possibleLine in possibleLines)//possibleLines
         {
-            BingoLine = new List<BingoCardBall>();
+            bingoLine.Clear();
             bIsBingo = true;
 
-            //check for each item if it is marked or not.
-            foreach (int item in PossibleLine.Value)
+            //check foreach item if it is marked or not.
+            foreach (int item in possibleLine.Value)
             {
-                BingoCardBall ball = Balls[item].GetComponent<BingoCardBall>();
+                BingoCardBall ball = balls[item].GetComponent<BingoCardBall>();
                 if (ball == null)
                     break;
 
-                if (!ball.bIsMarked)
+                if (!ball.GetIsMarked())
                 {
                     bIsBingo = false;
                     break;
                 }
-                BingoLine.Add(ball);
+                bingoLine.Add(ball);
             }
             if (bIsBingo)
                 break;
@@ -85,10 +90,8 @@ public class BingoCard : MonoBehaviour
         //BINGO!!!
         if (bIsBingo)
         {
-            foreach (BingoCardBall item in BingoLine)
+            foreach (BingoCardBall item in bingoLine)
             {
-                Debug.Log(BingoLine.Count);
-
                 if (item == null)
                     continue;
 

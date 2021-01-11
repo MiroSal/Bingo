@@ -4,66 +4,72 @@ using UnityEngine;
 
 public struct BingoBallData
 {
-    public int CurrentValue;
-    public FBingoTicketTextEnum BingoTicketTextEnum;
+    public int CurrentValue { get; private set; }
+    public FBingoBallPrefixEnum BingoBallPrefixEnum { get; private set; }
 
+    /// <summary>
+    /// Constructor that adds right letter for the number
+    /// </summary>
     public BingoBallData(int BallValue)
     {
         CurrentValue = BallValue;
         if (CurrentValue <= 15 && CurrentValue > 0)
         {
-            BingoTicketTextEnum = FBingoTicketTextEnum.B;
+            BingoBallPrefixEnum = FBingoBallPrefixEnum.B;
         }
         else if (CurrentValue <= 30 && CurrentValue > 15)
         {
-            BingoTicketTextEnum = FBingoTicketTextEnum.I;
+            BingoBallPrefixEnum = FBingoBallPrefixEnum.I;
         }
         else if (CurrentValue <= 45 && CurrentValue > 30)
         {
-            BingoTicketTextEnum = FBingoTicketTextEnum.N;
+            BingoBallPrefixEnum = FBingoBallPrefixEnum.N;
         }
         else if (CurrentValue <= 60 && CurrentValue > 45)
         {
-            BingoTicketTextEnum = FBingoTicketTextEnum.G;
+            BingoBallPrefixEnum = FBingoBallPrefixEnum.G;
         }
         else if (CurrentValue <= 75 && CurrentValue > 60)
         {
-            BingoTicketTextEnum = FBingoTicketTextEnum.O;
+            BingoBallPrefixEnum = FBingoBallPrefixEnum.O;
         }
         else
         {
-            BingoTicketTextEnum = FBingoTicketTextEnum.None;
+            BingoBallPrefixEnum = FBingoBallPrefixEnum.None;
         }
     }
 
-    public BingoBallData(FBingoTicketTextEnum bingoTicketTextEnum, List<int> IgnoredNumbers)
+    /// <summary>
+    /// Constructor that creates number for the given letter in BINGO, wanted ignored numbers are given to handle dublicates.
+    /// </summary>
+    public BingoBallData(FBingoBallPrefixEnum bingoTicketTextEnum, List<int> IgnoredNumbers)
     {
         int minNumber = 0;
         int maxNumber = 0;
-        BingoTicketTextEnum = bingoTicketTextEnum;
-        switch (BingoTicketTextEnum)
+        BingoBallPrefixEnum = bingoTicketTextEnum;
+        switch (BingoBallPrefixEnum)
         {
-            case FBingoTicketTextEnum.B:
+            case FBingoBallPrefixEnum.B:
                 minNumber = 1;
                 maxNumber = 15;
                 break;
-            case FBingoTicketTextEnum.I:
+            case FBingoBallPrefixEnum.I:
                 minNumber = 16;
                 maxNumber = 30;
                 break;
-            case FBingoTicketTextEnum.N:
+            case FBingoBallPrefixEnum.N:
                 minNumber = 31;
                 maxNumber = 45;
                 break;
-            case FBingoTicketTextEnum.G:
+            case FBingoBallPrefixEnum.G:
                 minNumber = 46;
                 maxNumber = 60;
                 break;
-            case FBingoTicketTextEnum.O:
+            case FBingoBallPrefixEnum.O:
                 minNumber = 61;
                 maxNumber = 75;
                 break;
-            case FBingoTicketTextEnum.None:
+            case FBingoBallPrefixEnum.None:
                 Debug.Log("This should never happen!!");
                 break;
             default:
@@ -87,7 +93,7 @@ public class BingoDirector : MonoBehaviour
     public static event OnCheckBingoDelegate CheckBingoDelegate;
 
     //Lines
-    public LineData lineData;
+    public LinesData linesData;
     private Dictionary<int, List<int>> possibleLines = new Dictionary<int, List<int>>();
 
     private void Awake()
@@ -95,7 +101,7 @@ public class BingoDirector : MonoBehaviour
         SortWantedLines();
     }
 
-    //sort lines from scribtableobjects data
+    //sort wanted lines from scribtableobjects data
     private void SortWantedLines()
     {
         ArrayLayout[] lineData = new ArrayLayout[0];
@@ -130,9 +136,8 @@ public class BingoDirector : MonoBehaviour
     }
 
     /// <summary>
-    /// Get sorted wanted lines from scribtableobject data
+    /// Get sorted wanted lines
     /// </summary>
-    /// <returns></returns>
     public Dictionary<int, List<int>> GetWantedLines()
     {
         return possibleLines;
@@ -152,8 +157,9 @@ public class BingoDirector : MonoBehaviour
             CheckBingoDelegate();
     }
 
+    //get wanted scribtableobject line data
     private ArrayLayout[] GetLinesFromData()
     {
-        return lineData.bingoLineData;
+        return linesData.GetbingoLineData();
     }
 }

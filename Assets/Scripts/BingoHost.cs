@@ -16,19 +16,20 @@ public class BingoHost : MonoBehaviour
     public Vector3 IdleLocation = new Vector3(0, 0, 0);
     public Vector3 PipeLocation = new Vector3(0, 0, 0);
 
+    [SerializeField]
+    private float idleTime = 1;
+    [SerializeField]
+    private float machineTime = 1;
+    [SerializeField]
+    private float pipeTime = 1;
 
-    public float IdleTime = 1;
-    public float MachineTime = 1;
-    public float PipeTime = 1;
-
-    public GameObject SmokeEffect;
+    [SerializeField]
+    private GameObject smokeEffect;
 
     private float timer = 0;
-
-    private HostStateEnum State;
+    private HostStateEnum state;
     private NumberAnnouncer numberAnnouncer = null;
-
-    private ParticleSystem SmokeParticleSystem = null;
+    private ParticleSystem smokeParticleSystem = null;
 
     void OnDrawGizmosSelected()
     {
@@ -44,47 +45,36 @@ public class BingoHost : MonoBehaviour
     private void Awake()
     {
         numberAnnouncer = FindObjectOfType<NumberAnnouncer>();
-        State = HostStateEnum.HS_Idle;
+        state = HostStateEnum.HS_Idle;
+        timer = idleTime;
 
-        if (SmokeEffect != null)
-        {
-            SmokeParticleSystem = SmokeEffect.GetComponent<ParticleSystem>();
-        }
-        else
-        {
-            Debug.LogWarning("SmokeEffectPrefab is null");
-        }
+        if (smokeEffect == null) { Debug.Log("smokeEffect was null"); return; }
+        smokeParticleSystem = smokeEffect.GetComponent<ParticleSystem>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        timer = IdleTime;
-    }
-
-    // Update is called once per frame
     void Update()
     {
         timer -= Time.deltaTime;
 
+        //loop hosts state with timer at the moment
         if (timer < 0)
         {
-            switch (State)
+            switch (state)
             {
                 case HostStateEnum.HS_Idle:
-                    timer = MachineTime;
+                    timer = machineTime;
                     gameObject.transform.position = MachineLocation;
-                    State = HostStateEnum.HS_Machine;
+                    state = HostStateEnum.HS_Machine;
                     break;
                 case HostStateEnum.HS_Machine:
-                    timer = PipeTime;
+                    timer = pipeTime;
                     gameObject.transform.position = PipeLocation;
-                    State = HostStateEnum.HS_Pipe;
+                    state = HostStateEnum.HS_Pipe;
                     break;
                 case HostStateEnum.HS_Pipe:
-                    timer = IdleTime;
+                    timer = idleTime;
                     gameObject.transform.position = IdleLocation;
-                    State = HostStateEnum.HS_Idle;
+                    state = HostStateEnum.HS_Idle;
                     if (numberAnnouncer != null)
                     {
                         numberAnnouncer.GenerateNextNumber();
@@ -95,7 +85,7 @@ public class BingoHost : MonoBehaviour
                 default:
                     break;
             }
-            SmokeParticleSystem.Play();
+            smokeParticleSystem.Play();
         }
     }
 }

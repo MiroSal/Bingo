@@ -5,11 +5,8 @@ using UnityEngine.UI;
 
 public class BingoCardBall : MonoBehaviour
 {
-    public Text NumberText;
-
-    //TODO name this properly
-    public bool bIsMarked = false;
-
+    private Text numberText;
+    private bool bIsMarked = false;
     private BingoBallData ballData;
 
     private void Awake()
@@ -18,23 +15,13 @@ public class BingoCardBall : MonoBehaviour
         bIsMarked = false;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
     public void Init(BingoBallData BallData)
     {
         ballData = BallData;
+        numberText = GetComponentInChildren<Text>();
 
-        if (NumberText != null)
-            NumberText.text = ballData.CurrentValue.ToString();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        if (numberText == null) { Debug.Log("numberText was null"); return; }
+        numberText.text = ballData.CurrentValue.ToString();
     }
 
     void CheckNumber(int number)
@@ -53,4 +40,6 @@ public class BingoCardBall : MonoBehaviour
     {
         BingoDirector.NumberAnnouncedDelegate -= CheckNumber;
     }
+
+    public bool GetIsMarked() { return bIsMarked; }
 }

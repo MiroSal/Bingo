@@ -1662,10 +1662,11 @@ MonoBehaviour:
   MachineLocation: {x: 2.63, y: 0, z: 2.17}
   IdleLocation: {x: 0.45, y: 0, z: 1.663}
   PipeLocation: {x: -2.85, y: 0, z: 2.63}
-  IdleTime: 1
-  MachineTime: 1
-  PipeTime: 1
-  SmokeEffect: {fileID: 2043558790}
+  idleTime: 1
+  machineTime: 1
+  pipeTime: 1
+  smokeEffect: {fileID: 2113660005139378960, guid: a5914720660154c4cadcba03b18f50ba,
+    type: 3}
 --- !u!4 &1540004973 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6c9afeca85a31df43b1d725040670f3d,
@@ -1879,7 +1880,7 @@ GameObject:
   - component: {fileID: 1689672203}
   - component: {fileID: 1689672204}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: ScreenCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2001,7 +2002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3bd3d4526d60214783c13743d484f02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BallPrefap: {fileID: 1345750630311074624, guid: 25dfb444b5f05a144a931e8cf33a939d,
+  ballPrefap: {fileID: 1345750630311074624, guid: 25dfb444b5f05a144a931e8cf33a939d,
     type: 3}
 --- !u!1001 &1748355915
 PrefabInstance:
@@ -2465,9 +2466,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5914720660154c4cadcba03b18f50ba, type: 3}
---- !u!1 &2043558790 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2113660005139378960, guid: a5914720660154c4cadcba03b18f50ba,
-    type: 3}
-  m_PrefabInstance: {fileID: 2043558789}
-  m_PrefabAsset: {fileID: 0}

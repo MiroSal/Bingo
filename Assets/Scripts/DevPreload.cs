@@ -9,7 +9,6 @@ public class DevPreload : MonoBehaviour
 {
     private void Awake()
     {
-
         GameObject check = GameObject.Find("Directors");
         if (check == null)
         {

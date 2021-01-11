@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-//TODO Clean and rename this script
-
 [System.Serializable]
 public class ArrayLayout
 {
@@ -14,7 +12,7 @@ public class ArrayLayout
         public bool[] row;
     }
 
-    public rowData[] rows = new rowData[5]; //Grid of 5x5
+    public rowData[] rows = new rowData[5]; //5x5 grid
 }
 
 /// <summary>
@@ -34,9 +32,12 @@ public class CustPropertyDrawer : PropertyDrawer
         {
             SerializedProperty row = data.GetArrayElementAtIndex(j).FindPropertyRelative("row");
             newposition.height = 18f;
+
             if (row.arraySize != 5)
                 row.arraySize = 5;
+
             newposition.width = position.width / 8;
+
             for (int i = 0; i < 5; i++)
             {
                 EditorGUI.PropertyField(newposition, row.GetArrayElementAtIndex(i), GUIContent.none);
@@ -54,13 +55,19 @@ public class CustPropertyDrawer : PropertyDrawer
     }
 }
 
-
 /// <summary>
-/// ScriptableObject for Setting Gamemode wanted lines
+/// ScriptableObject for Setting current Gamemodes wanted lines
 /// </summary>
 [System.Serializable]
 [CreateAssetMenu(fileName = "LineData", menuName = "ScriptableObjects/LineData", order = 1)]
-public class LineData : ScriptableObject
+public class LinesData : ScriptableObject
 {
-    public ArrayLayout[] bingoLineData = new ArrayLayout[1];
+    [SerializeField]
+    private ArrayLayout[] bingoLineData = new ArrayLayout[1];
+
+    public ArrayLayout[] GetbingoLineData()
+    {
+        return bingoLineData;
+    }
+
 }
