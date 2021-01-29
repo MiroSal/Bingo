@@ -5,16 +5,22 @@ using UnityEngine.UI;
 
 public class BingoCardBall : MonoBehaviour
 {
+    //Balls number
     private Text numberText;
-    private bool bIsMarked = false;
+
+    //Is this ball announced
+    public bool bIsMarked { get; private set; } = false;
+
+    //This balls Data
     private BingoBallData ballData;
 
     private void Awake()
     {
-        BingoDirector.NumberAnnouncedDelegate += CheckNumber;
+        BingoDirector.NumberAnnouncedDelegate += CheckNumber; //Register to delegate.
         bIsMarked = false;
     }
 
+    //Initialize with BallData
     public void Init(BingoBallData BallData)
     {
         ballData = BallData;
@@ -24,6 +30,7 @@ public class BingoCardBall : MonoBehaviour
         numberText.text = ballData.CurrentValue.ToString();
     }
 
+    //Check if this balls number was announced
     void CheckNumber(int number)
     {
         if (ballData.CurrentValue == number)
@@ -38,8 +45,6 @@ public class BingoCardBall : MonoBehaviour
 
     private void OnDisable()
     {
-        BingoDirector.NumberAnnouncedDelegate -= CheckNumber;
+        BingoDirector.NumberAnnouncedDelegate -= CheckNumber; //Unregister from delegate
     }
-
-    public bool GetIsMarked() { return bIsMarked; }
 }

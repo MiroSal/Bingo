@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SceneLoader : MonoBehaviour
 {
-    public string MainScenename = "BingoMain";
+    [SerializeField]
+    private string MainScenename = "BingoMain";
 
     void Start()
     {
