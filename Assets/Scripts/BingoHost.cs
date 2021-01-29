@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Bingo Host AI states
 enum HostStateEnum
 {
     HS_Idle,
@@ -12,10 +13,12 @@ enum HostStateEnum
 
 public class BingoHost : MonoBehaviour
 {
+    //Locations
     public Vector3 MachineLocation = new Vector3(0, 0, 0);
     public Vector3 IdleLocation = new Vector3(0, 0, 0);
     public Vector3 PipeLocation = new Vector3(0, 0, 0);
 
+   
     [SerializeField]
     private float idleTime = 1;
     [SerializeField]
@@ -23,17 +26,22 @@ public class BingoHost : MonoBehaviour
     [SerializeField]
     private float pipeTime = 1;
 
+    //Particle Effects
     [SerializeField]
     private GameObject smokeEffect;
 
+    //Timer for next state
     private float timer = 0;
+
+    //Curren State
     private HostStateEnum state;
+
     private NumberAnnouncer numberAnnouncer = null;
     private ParticleSystem smokeParticleSystem = null;
 
     void OnDrawGizmosSelected()
     {
-        // Draw a yellow sphere at the transform's position
+        //Draw a yellow sphere at the transform's position
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(MachineLocation, 0.1f);
         Gizmos.color = Color.red;
@@ -56,7 +64,7 @@ public class BingoHost : MonoBehaviour
     {
         timer -= Time.deltaTime;
 
-        //loop hosts state with timer at the moment
+        //Loop hosts state with timer at the moment
         if (timer < 0)
         {
             switch (state)

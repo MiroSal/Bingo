@@ -5,9 +5,13 @@ using UnityEngine.UI;
 
 public class NumberAnnouncer : MonoBehaviour
 {
+    //Bingo Director
     private BingoDirector bingoDirector;
-    private List<int> numbers = new List<int>();
 
+    //All Numbers Announced
+    private List<int> possibleNumbers = new List<int>();
+
+    //Ball Image shown in stage Monitor
     [SerializeField]
     private GameObject ballPrefap;
 
@@ -15,44 +19,37 @@ public class NumberAnnouncer : MonoBehaviour
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
 
-        //All possible numbers
+        //Add All possible numbers to able to announce
         for (int i = 1; i <= 75; i++)
         {
-            numbers.Add(i);
+            possibleNumbers.Add(i);
         }
     }
 
+    /// <summary>
+    /// Generate next random number to Announce
+    /// </summary>
     public void GenerateNextNumber()
     {
-        if (numbers.Count > 0)
+        if (possibleNumbers.Count > 0)
         {
-            //get random from possible bingo numbers
-            int random = (int)Random.Range(0, numbers.Count - 1);
-            BingoBallData nextBall = new BingoBallData(numbers[random]);
-            numbers.RemoveAt(random);
+            int random = (int)Random.Range(0, possibleNumbers.Count - 1);//Get random number from possible bingo numbers
+            BingoBallData nextBall = new BingoBallData(possibleNumbers[random]);//Create next ball with given index
 
-            //add to monitor screen
             if (ballPrefap == null) { Debug.Log("ballPrefap was null"); return; }
 
-            GameObject obj = Instantiate(ballPrefap);
-            if (obj == null) { Debug.Log("objt was null"); return; }
+            GameObject ball = Instantiate(ballPrefap);//Create ball
+            if (ball == null) { Debug.Log("objt was null"); return; }
+            possibleNumbers.RemoveAt(random);//Remove used number from possibleNumbers
 
-            obj.transform.SetParent(this.transform, false);
-            Text text = obj.GetComponentInChildren<Text>();
+            ball.transform.SetParent(this.transform, false);//Set ball to studio monitor
+            Text text = ball.GetComponentInChildren<Text>();
 
             if (text == null) { Debug.Log("text was null"); return; }
-            text.text = nextBall.BingoBallPrefixEnum.ToString() + nextBall.CurrentValue.ToString();
+            text.text = nextBall.BingoBallPrefixEnum.ToString() + nextBall.CurrentValue.ToString();//Add Number with prefix to balls textfield
 
             if (bingoDirector == null) { Debug.Log("bingoDirector was null"); return; }
-            bingoDirector.AnnounceNumber(nextBall.CurrentValue);
+            bingoDirector.AnnounceNumber(nextBall.CurrentValue);//Tell BingoDirector that new number was created
         }
-
-        CheckBingo();
-    }
-
-    public void CheckBingo()
-    {
-        if (bingoDirector == null) { Debug.Log("bingoDirector was null"); return; }
-        bingoDirector.CheckBingo();
     }
 }

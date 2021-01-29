@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class WantedWinLines : MonoBehaviour
 {
     //Ball Image shown in UI
-    [Header("Prefab for the ball in Bingocard")]
-    public GameObject BallPrefab = null;
+    [Header("Prefab for the ball in Bingocard")][SerializeField]
+    private GameObject BallPrefab = null;
 
     //Interval to show next wanted line
-    public float LoopingInterval = 5;
+    [SerializeField]
+    private float LoopingInterval = 5;
 
     //BingoDirector
     private BingoDirector bingoDirector = null;
@@ -30,10 +31,9 @@ public class WantedWinLines : MonoBehaviour
     //Currently shown wantedline
     private List<int> currentWantedLine = new List<int>();
 
-
     private void Awake()
     {
-        bingoDirector = FindObjectOfType<BingoDirector>();//get bingodirector
+        bingoDirector = FindObjectOfType<BingoDirector>();//get BingoDirector
 
         if (bingoDirector != null)
             wantedLines = bingoDirector.GetWantedLines();//get wantedlines
@@ -69,7 +69,7 @@ public class WantedWinLines : MonoBehaviour
                 currentWantedLine = wantedLines[wantedLineIndex];
             }
 
-            for (int i = 0; i < balls.Length; i++)//loop through UI balls
+            for (int i = 0; i < balls.Length; i++)//Loop through UI balls
             {
                 if (lastWantedLine.Contains(i))//Change Lastwantedline back to default appearance
                 {
