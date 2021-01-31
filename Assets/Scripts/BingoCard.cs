@@ -36,8 +36,7 @@ public class BingoCard : MonoBehaviour
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
 
-        if (bingoDirector != null)
-            wantedLines = bingoDirector.GetWantedLines();//get currently wanted lines for win
+        FindWantedLines();//get currently wanted lines for win
 
         List<int> addedNumbers = new List<int>();
         BingoBallData ballData = new BingoBallData();
@@ -64,6 +63,7 @@ public class BingoCard : MonoBehaviour
         }
 
         BingoDirector.CheckBingoDelegate += CheckBingo; //Register to delegate.
+        BingoDirector.BingoFoundDelegate += FindWantedLines;
     }
 
     //Binded to CheckBingoDelegate
@@ -112,5 +112,11 @@ public class BingoCard : MonoBehaviour
             if (bingoDirector)
                 bingoDirector.AnnounceBingo();
         }
+    }
+
+    void FindWantedLines()
+    {
+        if (bingoDirector != null)
+            wantedLines = bingoDirector.GetWantedLines();//get currently wanted lines for win
     }
 }

@@ -237,8 +237,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef91d1a9329bfc498a5772bf4a047ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentGameModeLineData: {fileID: 11400000, guid: 3381a6a9fdbd8814aa21d3c96c45ab76,
-    type: 2}
+  CurrentGameModeLineDatas:
+  - {fileID: 11400000, guid: ceb89759e0972c5408654381ae69d6df, type: 2}
+  - {fileID: 11400000, guid: 7d79ff0f3a851484f93f6696419f6654, type: 2}
+  - {fileID: 11400000, guid: 3381a6a9fdbd8814aa21d3c96c45ab76, type: 2}
 --- !u!114 &538500201
 MonoBehaviour:
   m_ObjectHideFlags: 0

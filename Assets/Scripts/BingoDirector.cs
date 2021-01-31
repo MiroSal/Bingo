@@ -96,7 +96,7 @@ public struct BingoBallData
                 possibleNumbers.Add(i);
             }
         }
-        CurrentValue = possibleNumbers[(int)Random.Range(0, possibleNumbers.Count-1)];//Create random number from PossibleNumbers.
+        CurrentValue = possibleNumbers[(int)Random.Range(0, possibleNumbers.Count - 1)];//Create random number from PossibleNumbers.
     }
 }
 
@@ -110,59 +110,83 @@ public class BingoDirector : MonoBehaviour
     public delegate void OnBingoFoundDelegate();
     public static event OnBingoFoundDelegate BingoFoundDelegate;
 
-    //Current GameModes LineData used
+    /// <summary>
+    /// Current GameModes LineData.
+    /// GameMode can have multiple rounds and on each round wantedlines are different
+    /// </summary>
     [SerializeField]
-    private LinesData CurrentGameModeLineData;
+    private List<LinesData> currentGameModeLineDatas = new List<LinesData>();
 
-    //sorted wanted lines from LinesData.
-    private Dictionary<int, List<int>> WantedLines = new Dictionary<int, List<int>>();
+    /// <summary>
+    /// AllWantedLines of current GameMode
+    /// Each index contain current rounds wanted lines
+    /// </summary>
+    List<Dictionary<int, List<int>>> allWantedLines = new List<Dictionary<int, List<int>>>();
+
+    private int CurrentRound = 0;
 
     private void Awake()
     {
         SortWantedLines();
     }
 
-    //Sort wantedlines from scribtableobjects data
+    /// <summary>
+    /// Sort wantedlines from scribtableobjects data
+    /// </summary>
     private void SortWantedLines()
     {
-        ArrayLayout[] lineData = new ArrayLayout[0];
-        lineData = GetLinesFromData(); //get all wantedline data from current scribtableobject/CurrentGameModeLineData
+        Dictionary<int, List<int>> WantedLines = new Dictionary<int, List<int>>();
 
-        //Loop data and add Wantedlines ball index to dictionary.
-        if (lineData != null)
+        foreach (LinesData linesData in currentGameModeLineDatas)//every round are searching different lines for BINGO!
         {
-            int ballCount = 0;//
-            for (int j = 0; j <= lineData.Length - 1; j++)//Loop all currently possible wantedlines that are needed for BINGO from CurrentgameModesLineData
+            WantedLines.Clear();
+            ArrayLayout[] lineData = new ArrayLayout[0];
+            lineData = GetLinesFromData(linesData); //get all wantedline data from current scribtableobject/CurrentGameModeLineData
+
+            //Loop data and add Wantedlines ball index to dictionary.
+            if (lineData != null)
             {
-                ballCount = 0;
-
-                List<int> bingoLine = new List<int>();//Line that is wanted for BINGO!!
-
-                for (int i = 0; i <= lineData[j].rows.Length - 1; i++)//Iterate all rows in grid 5x5
+                int ballCount = 0;//
+                for (int j = 0; j <= lineData.Length - 1; j++)//Loop all currently possible wantedlines that are needed for BINGO from CurrentgameModesLineData
                 {
-                    for (int k = 0; k <= lineData[j].rows[i].row.Length - 1; k++)//Iterate all columns in the current row
-                    {
-                        if (ballCount > 24)//bingocard has only 25 balls
-                            break;
+                    ballCount = 0;
 
-                        if (lineData[j].rows[i].row[k])//if bool in current position in row/column is true add to bingoLine.
+                    List<int> bingoLine = new List<int>();//Line that is wanted for BINGO!!
+
+                    for (int i = 0; i <= lineData[j].rows.Length - 1; i++)//Iterate all rows in grid 5x5
+                    {
+                        for (int k = 0; k <= lineData[j].rows[i].row.Length - 1; k++)//Iterate all columns in the current row
                         {
-                            bingoLine.Add(ballCount);
+                            if (ballCount > 24)//bingoCard has only 25 balls
+                                break;
+
+                            if (lineData[j].rows[i].row[k])//if bool in current position in row/column is true add to bingoLine.
+                            {
+                                bingoLine.Add(ballCount);
+                            }
+                            ballCount++;
                         }
-                        ballCount++;
                     }
+                    WantedLines.Add(j, bingoLine);//add sorted lineData to dictionary
+
                 }
-                WantedLines.Add(j, bingoLine);//add sorted lineData to dictionary
             }
+            allWantedLines.Add(new Dictionary<int, List<int>>(WantedLines));
         }
     }
 
     /// <summary>
     /// Get sorted wanted lines
+    /// return empty if no more rounds
     /// </summary>
     public Dictionary<int, List<int>> GetWantedLines()
     {
-        return WantedLines;
+        if (allWantedLines.Count > CurrentRound)
+        {
+            return allWantedLines[CurrentRound];
+        }
+
+        return new Dictionary<int, List<int>>();
     }
 
     /// <summary>
@@ -182,6 +206,8 @@ public class BingoDirector : MonoBehaviour
     /// </summary>
     public void AnnounceBingo()
     {
+        CurrentRound++;
+
         if (BingoFoundDelegate != null)
             BingoFoundDelegate();
     }
@@ -189,8 +215,8 @@ public class BingoDirector : MonoBehaviour
     /// <summary>
     /// Get scribtableobjects wanted linedata
     /// </summary>
-    private ArrayLayout[] GetLinesFromData()
+    private ArrayLayout[] GetLinesFromData(LinesData LineData)
     {
-        return CurrentGameModeLineData.GetbingoLineData();
+        return LineData.GetbingoLineData();
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Toggle CanvasComponent Visibility when Bingo is found.
+/// Toggle CanvasComponents Visibility when Bingo is found.
 /// </summary>
 public class BingoCanvas : MonoBehaviour
 {
@@ -27,11 +27,14 @@ public class BingoCanvas : MonoBehaviour
         Time.timeScale = 0;
     }
 
-    //Continue Bingo
+    /// <summary>
+    /// Continue Bingo, Binded to continue Button
+    /// </summary>
     public void Continue()
     {
         if (canvas)
             canvas.enabled = false;
+
         Time.timeScale = 1;
     }
 
