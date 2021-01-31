@@ -108,6 +108,9 @@ public class BingoCard : MonoBehaviour
                     image.color = Color.blue;
                 }
             }
+
+            if (bingoDirector)
+                bingoDirector.AnnounceBingo();
         }
     }
 }

@@ -107,6 +107,8 @@ public class BingoDirector : MonoBehaviour
     public static event OnNumberAnnouncedDelegate NumberAnnouncedDelegate;
     public delegate void OnCheckBingoDelegate();
     public static event OnCheckBingoDelegate CheckBingoDelegate;
+    public delegate void OnBingoFoundDelegate();
+    public static event OnBingoFoundDelegate BingoFoundDelegate;
 
     //Current GameModes LineData used
     [SerializeField]
@@ -173,6 +175,15 @@ public class BingoDirector : MonoBehaviour
 
         if (CheckBingoDelegate != null)
             CheckBingoDelegate();
+    }
+
+    /// <summary>
+    /// Broadcast BINGO!!!
+    /// </summary>
+    public void AnnounceBingo()
+    {
+        if (BingoFoundDelegate != null)
+            BingoFoundDelegate();
     }
 
     /// <summary>
