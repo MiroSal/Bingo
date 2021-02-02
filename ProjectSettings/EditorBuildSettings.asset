@@ -9,6 +9,15 @@ EditorBuildSettings:
     path: Assets/Scenes/_Preload.unity
     guid: ab738f9afc19cea4ebba3e23bb44b278
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 929b6cad08bb84243bed9c213d8fbb25
+  - enabled: 1
     path: Assets/Scenes/BingoStudio.unity
     guid: 70d95826f572a5f41b8a3844db257244
+  - enabled: 1
+    path: Assets/Scenes/BingoStudio_UI.unity
+    guid: 3c92f35929c085146af622c026e21cfc
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: bdcd7fb31a0a7024cb70889ffd81c1e2
   m_configObjects: {}
