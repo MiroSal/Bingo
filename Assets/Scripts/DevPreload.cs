@@ -13,7 +13,7 @@ public class DevPreload : MonoBehaviour
         if (check == null)
         {
             Debug.Log("Loading _preload scene"+ check);
-            UnityEngine.SceneManagement.SceneManager.LoadScene("_Preload");         
+            SceneLoader.LoadScene(SceneLoader.Scene._PreLoad);
         }
     }
 }

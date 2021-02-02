@@ -2,104 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// BallData Struct. 
-/// </summary>
-public struct BingoBallData
-{
-    //Balls number
-    public int CurrentValue { get; private set; }
-
-    //Balls Prefix letter
-    public FBingoBallPrefixEnum BingoBallPrefixEnum { get; private set; }
-
-    /// <summary>
-    /// Constructor that adds appropriate letter for the given bingoball number
-    /// </summary>
-    public BingoBallData(int BallValue)
-    {
-        CurrentValue = BallValue;
-
-        //Find the right Prefix for the number.
-        if (CurrentValue <= 15 && CurrentValue > 0)
-        {
-            BingoBallPrefixEnum = FBingoBallPrefixEnum.B;
-        }
-        else if (CurrentValue <= 30 && CurrentValue > 15)
-        {
-            BingoBallPrefixEnum = FBingoBallPrefixEnum.I;
-        }
-        else if (CurrentValue <= 45 && CurrentValue > 30)
-        {
-            BingoBallPrefixEnum = FBingoBallPrefixEnum.N;
-        }
-        else if (CurrentValue <= 60 && CurrentValue > 45)
-        {
-            BingoBallPrefixEnum = FBingoBallPrefixEnum.G;
-        }
-        else if (CurrentValue <= 75 && CurrentValue > 60)
-        {
-            BingoBallPrefixEnum = FBingoBallPrefixEnum.O;
-        }
-        else
-        {
-            BingoBallPrefixEnum = FBingoBallPrefixEnum.None;
-        }
-    }
-
-    /// <summary>
-    /// Constructor that creates number for the given Prefix letter.
-    /// Wanted ignored numbers are given to handle dublicates.
-    /// </summary>
-    public BingoBallData(FBingoBallPrefixEnum bingoTicketTextEnum, List<int> IgnoredNumbers)
-    {
-        int minNumber = 0;
-        int maxNumber = 0;
-        BingoBallPrefixEnum = bingoTicketTextEnum;
-
-        //Find the right range for the prefix letter
-        switch (BingoBallPrefixEnum)
-        {
-            case FBingoBallPrefixEnum.B:
-                minNumber = 1;
-                maxNumber = 15;
-                break;
-            case FBingoBallPrefixEnum.I:
-                minNumber = 16;
-                maxNumber = 30;
-                break;
-            case FBingoBallPrefixEnum.N:
-                minNumber = 31;
-                maxNumber = 45;
-                break;
-            case FBingoBallPrefixEnum.G:
-                minNumber = 46;
-                maxNumber = 60;
-                break;
-            case FBingoBallPrefixEnum.O:
-                minNumber = 61;
-                maxNumber = 75;
-                break;
-            case FBingoBallPrefixEnum.None:
-                Debug.Log("This should never happen!!");
-                break;
-            default:
-                break;
-        }
-
-        List<int> possibleNumbers = new List<int>();
-
-        for (int i = minNumber; i < maxNumber; i++)//Sort ignored numbers
-        {
-            if (!IgnoredNumbers.Contains(i))
-            {
-                possibleNumbers.Add(i);
-            }
-        }
-        CurrentValue = possibleNumbers[(int)Random.Range(0, possibleNumbers.Count - 1)];//Create random number from PossibleNumbers.
-    }
-}
-
 public class BingoDirector : MonoBehaviour
 {
     //Delegates/events
@@ -107,8 +9,10 @@ public class BingoDirector : MonoBehaviour
     public static event OnNumberAnnouncedDelegate NumberAnnouncedDelegate;
     public delegate void OnCheckBingoDelegate();
     public static event OnCheckBingoDelegate CheckBingoDelegate;
-    public delegate void OnBingoFoundDelegate();
+    public delegate void OnBingoFoundDelegate(bool wasLastRound);
     public static event OnBingoFoundDelegate BingoFoundDelegate;
+    public delegate void OnStartNewRoundDelegate();
+    public static event OnStartNewRoundDelegate StartNewRoundDelegate;
 
     /// <summary>
     /// Current GameModes LineData.
@@ -123,7 +27,10 @@ public class BingoDirector : MonoBehaviour
     /// </summary>
     List<Dictionary<int, List<int>>> allWantedLines = new List<Dictionary<int, List<int>>>();
 
-    private int CurrentRound = 0;
+    /// <summary>
+    /// Current round of bingo currently playing;
+    /// </summary>
+    private int Roundindex = 0;
 
     private void Awake()
     {
@@ -135,11 +42,11 @@ public class BingoDirector : MonoBehaviour
     /// </summary>
     private void SortWantedLines()
     {
-        Dictionary<int, List<int>> WantedLines = new Dictionary<int, List<int>>();
+        Dictionary<int, List<int>> Lines = new Dictionary<int, List<int>>();
 
         foreach (LinesData linesData in currentGameModeLineDatas)//every round are searching different lines for BINGO!
         {
-            WantedLines.Clear();
+            Lines.Clear();
             ArrayLayout[] lineData = new ArrayLayout[0];
             lineData = GetLinesFromData(linesData); //get all wantedline data from current scribtableobject/CurrentGameModeLineData
 
@@ -167,11 +74,11 @@ public class BingoDirector : MonoBehaviour
                             ballCount++;
                         }
                     }
-                    WantedLines.Add(j, bingoLine);//add sorted lineData to dictionary
+                    Lines.Add(j, bingoLine);//add sorted lineData to dictionary
 
                 }
             }
-            allWantedLines.Add(new Dictionary<int, List<int>>(WantedLines));
+            allWantedLines.Add(new Dictionary<int, List<int>>(Lines));//add dictionary from all current rounds wantedlines to list
         }
     }
 
@@ -181,9 +88,9 @@ public class BingoDirector : MonoBehaviour
     /// </summary>
     public Dictionary<int, List<int>> GetWantedLines()
     {
-        if (allWantedLines.Count > CurrentRound)
+        if (allWantedLines.Count > Roundindex)
         {
-            return allWantedLines[CurrentRound];
+            return allWantedLines[Roundindex];
         }
 
         return new Dictionary<int, List<int>>();
@@ -206,10 +113,11 @@ public class BingoDirector : MonoBehaviour
     /// </summary>
     public void AnnounceBingo()
     {
-        CurrentRound++;
-
         if (BingoFoundDelegate != null)
-            BingoFoundDelegate();
+        {
+            if (allWantedLines.Count - 1 > Roundindex) { BingoFoundDelegate(false); }
+            else { BingoFoundDelegate(true); } //if this round was the last
+        }
     }
 
     /// <summary>
@@ -218,5 +126,40 @@ public class BingoDirector : MonoBehaviour
     private ArrayLayout[] GetLinesFromData(LinesData LineData)
     {
         return LineData.GetbingoLineData();
+    }
+
+    /// <summary>
+    /// Broadcast start of new round
+    /// </summary>
+    public void StartNewRound()
+    {
+        Roundindex++;
+
+        if (StartNewRoundDelegate != null)
+        {
+            StartNewRoundDelegate();
+        }
+    }
+
+
+    public void EndGameMode()
+    {
+        Roundindex = 0;
+    }
+
+    /// <summary>
+    /// Pause Game
+    /// </summary>
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+    }
+
+    /// <summary>
+    /// UnPauseGame
+    /// </summary>
+    public void UnPauseGame()
+    {
+        Time.timeScale = 4;
     }
 }

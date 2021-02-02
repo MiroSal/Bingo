@@ -1,13 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
-/// Toggle CanvasComponents Visibility when Bingo is found.
+/// Functionality for BingoCanvas
 /// </summary>
 public class BingoCanvas : MonoBehaviour
 {
+    //BingoCanvas
     Canvas canvas = null;
+
+    //Button to get back to MainMenu
+    GameObject MainMenuButton = null; 
+    
+    //Button to get back to MainMenu
+    GameObject ContinueButton = null;
+
+    //BingoDirector
+    private BingoDirector bingoDirector = null;
 
     private void Awake()
     {
@@ -15,16 +26,37 @@ public class BingoCanvas : MonoBehaviour
         if(canvas)
         canvas.enabled = false;
 
-        BingoDirector.BingoFoundDelegate += BingoFound;
+        MainMenuButton = gameObject.transform.Find("MainMenuButton").gameObject;
+        if (MainMenuButton)
+            MainMenuButton.SetActive(false);
+        
+        ContinueButton = gameObject.transform.Find("ContinueButton").gameObject;
+        if (ContinueButton)
+            ContinueButton.SetActive(true);
+
+        bingoDirector = FindObjectOfType<BingoDirector>();
+
+        BingoDirector.BingoFoundDelegate += BingoFound;//Bind to delegate
     }
 
-    //Bingo is found
-    void BingoFound()
+    /// <summary>
+    /// called from delegate when Bingo is found
+    /// </summary>
+    void BingoFound(bool wasLastRound)
     {
         if (canvas)
             canvas.enabled = true;
 
-        Time.timeScale = 0;
+        if (wasLastRound)
+        {
+            if (MainMenuButton)
+                MainMenuButton.SetActive(true);
+
+            if (ContinueButton)
+                ContinueButton.SetActive(false);
+        }
+
+        bingoDirector.PauseGame();
     }
 
     /// <summary>
@@ -35,7 +67,18 @@ public class BingoCanvas : MonoBehaviour
         if (canvas)
             canvas.enabled = false;
 
-        Time.timeScale = 1;
+        bingoDirector.StartNewRound();
+        bingoDirector.UnPauseGame();
+    }
+
+    /// <summary>
+    /// LoadMainMenu, Binded to continue Button
+    /// </summary>
+    public void LoadMainMenu()
+    {
+        bingoDirector.UnPauseGame();
+        bingoDirector.EndGameMode();
+        SceneLoader.LoadScene(SceneLoader.Scene.MainMenu);//Unbind Delegate
     }
 
     private void OnDisable()

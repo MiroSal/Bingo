@@ -47,7 +47,7 @@ public class WantedWinLines : MonoBehaviour
 
         FindWantedLines();
 
-        BingoDirector.BingoFoundDelegate += FindWantedLines;
+        BingoDirector.StartNewRoundDelegate += FindWantedLines;
     }
 
     void Update()
@@ -60,7 +60,9 @@ public class WantedWinLines : MonoBehaviour
             UpdateWantedList();
         }
     }
-
+    /// <summary>
+    /// Update WantedLines UI
+    /// </summary>
     void UpdateWantedList()
     {
         List<int> lastWantedLine = new List<int>();
@@ -98,19 +100,20 @@ public class WantedWinLines : MonoBehaviour
         wantedLineIndex++;
         timer = LoopingInterval;
     }
+
+    /// <summary>
+    /// Get next rounds wantedlines
+    /// </summary>
     void FindWantedLines()
     {
         if (bingoDirector != null)
             wantedLines = bingoDirector.GetWantedLines();//get currently wanted lines for win
 
-        if (wantedLines.Count > 0)
-        {
             UpdateWantedList();
-        }
-        else
-        {
-            //TODO add Quit button to visible here
-            Debug.Log("Game Over");
-        }
+    }
+
+    private void OnDisable()
+    {
+        BingoDirector.StartNewRoundDelegate -= FindWantedLines;
     }
 }
