@@ -160,6 +160,6 @@ public class BingoDirector : MonoBehaviour
     /// </summary>
     public void UnPauseGame()
     {
-        Time.timeScale = 4;
+        Time.timeScale = 1;
     }
 }
