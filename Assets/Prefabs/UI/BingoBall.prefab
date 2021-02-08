@@ -168,6 +168,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f78b1131b8b53294a8d573bc8029431f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberText: {fileID: 9199775705202459615}
-  activeColor: {r: 0.12094951, g: 1, b: 0, a: 0}
-  image: {fileID: 7152583551803837674}
+  changeIsVisual: 1

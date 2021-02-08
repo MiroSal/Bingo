@@ -8,16 +8,15 @@ public class BingoCardBall : MonoBehaviour
     //Balls number
     private Text numberText;
 
-    //Is this ball announced
-    public bool bIsMarked { get; private set; } = false;
-
     //This balls Data
-    private BingoBallData ballData;
+    public BingoBallData ballData;
+
+    [SerializeField]
+    bool changeIsVisual = false;
 
     private void Awake()
     {
         BingoDirector.NumberAnnouncedDelegate += CheckNumber; //Register to delegate.
-        bIsMarked = false;
     }
 
     //Initialize with BallData
@@ -26,8 +25,11 @@ public class BingoCardBall : MonoBehaviour
         ballData = BallData;
         numberText = GetComponentInChildren<Text>();
 
-        if (numberText == null) { Debug.Log("numberText was null"); return; }
-        numberText.text = ballData.CurrentValue.ToString();
+        if (changeIsVisual)
+        {
+            if (numberText == null) { Debug.Log("numberText was null"); return; }
+            numberText.text = ballData.CurrentValue.ToString();
+        }
     }
 
     //Check if this balls number was announced
@@ -35,11 +37,26 @@ public class BingoCardBall : MonoBehaviour
     {
         if (ballData.CurrentValue == number)
         {
-            bIsMarked = true;
+            ballData.bIsMarked = true;
+            if (changeIsVisual)
+            {
+                Image image = GetComponent<Image>();
+                if (image != null)
+                    image.color = Color.green;
+            }
+        }
+    }
 
-            Image image = GetComponent<Image>();
-            if (image != null)
-                image.color = Color.green;
+    public void markAsBingoLine()
+    {
+        if (ballData.bIsMarked)
+        {
+            if (changeIsVisual)
+            {
+                Image image = GetComponent<Image>();
+                if (image != null)
+                    image.color = Color.blue;
+            }
         }
     }
 

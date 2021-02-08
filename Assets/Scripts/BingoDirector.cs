@@ -35,6 +35,7 @@ public class BingoDirector : MonoBehaviour
     private void Awake()
     {
         SortWantedLines();
+        Time.timeScale = 10;
     }
 
     /// <summary>
@@ -117,6 +118,8 @@ public class BingoDirector : MonoBehaviour
         {
             if (allWantedLines.Count - 1 > Roundindex) { BingoFoundDelegate(false); }
             else { BingoFoundDelegate(true); } //if this round was the last
+
+            Debug.Log("BINGOOOOO");
         }
     }
 
@@ -140,7 +143,6 @@ public class BingoDirector : MonoBehaviour
             StartNewRoundDelegate();
         }
     }
-
 
     public void EndGameMode()
     {

@@ -504,7 +504,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1750400713519754911}
-  - component: {fileID: 8247774394128705842}
+  - component: {fileID: 9141080888979147056}
   m_Layer: 5
   m_Name: BingoCard
   m_TagString: Untagged
@@ -534,7 +534,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8247774394128705842
+--- !u!114 &9141080888979147056
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6579473930675475674}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11ccfe1ad95f8114fbed3f044688c0a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 75a2d70518c577644847e3aae150f9f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   BallPrefab: {fileID: 6389667505106437275, guid: ff28ec71e2ea2b6438e6fabd17289f5d,
