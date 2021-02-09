@@ -27,6 +27,9 @@ public struct FCheckBingoResult
     }
 }
 
+/// <summary>
+/// Base class for Bingo Cards, this version creates only Bingo Card data.
+/// </summary>
 public class BingoCard : MonoBehaviour
 {
     //BingoDirector
@@ -35,23 +38,21 @@ public class BingoCard : MonoBehaviour
     //Currently wanted lines
     protected Dictionary<int, List<int>> wantedLines = new Dictionary<int, List<int>>();
 
-    //Ball numbers prefix letter
-    protected FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B;
-
-    private int NumbersLeftToBingo = 5;
+    //Unmarked balls to bingo, from closest line to Bingo.
+    private int ballsLeftToBingo = 25;
 
     public void Initialize()
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
+        List<int> addedNumbers = new List<int>(); //avoid dublicates
+        FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B; //Ball numbers prefix letter
 
         FindWantedLines();
 
-        List<int> addedNumbers = new List<int>();
-      
         for (int i = 0; i < 25; i++)
         {
-            BingoCardBall ball = gameObject.AddComponent<BingoCardBall>();
-            ball.Init(new BingoBallData(bingoBallPrefixEnum, addedNumbers));
+            BingoCardBall ball = gameObject.AddComponent<BingoCardBall>(); //Create ball to this card...
+            ball.Init(new BingoBallData(bingoBallPrefixEnum, addedNumbers)); //and Initilize it with data.
 
             bingoBallPrefixEnum++; //Move to next prefix letter, if none start again from next line.
             if (bingoBallPrefixEnum == FBingoBallPrefixEnum.None)
@@ -71,10 +72,10 @@ public class BingoCard : MonoBehaviour
     /// </summary>
     private void CheckBingo()
     {
-        BingoCardBall[] Cardballs = gameObject.GetComponents<BingoCardBall>();
+        BingoCardBall[] Cardballs = gameObject.GetComponents<BingoCardBall>();//get all balldatas from this Bingo Card
 
-        FCheckBingoResult result = bingoCheck(wantedLines, Cardballs);
-        NumbersLeftToBingo = result.numbersToBingo;
+        FCheckBingoResult result = BingoCheck(wantedLines, Cardballs);//check if Bingo was found
+        ballsLeftToBingo = result.numbersToBingo;
 
         //BINGO!!!
         if (result.bIsBingo)
@@ -85,7 +86,7 @@ public class BingoCard : MonoBehaviour
                 {
                     if (ball.ballData.CurrentValue == result.bingoDataLine[i].CurrentValue)
                     {
-                        ball.markAsBingoLine();
+                        ball.MarkBall();
                     }
                 }
             }
@@ -95,22 +96,30 @@ public class BingoCard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get current rounds WantedLines
+    /// </summary>
     protected void FindWantedLines()
     {
         if (bingoDirector != null)
             wantedLines = bingoDirector.GetWantedLines();//get currently wanted lines for win
     }
 
-
+    /// <summary>
+    /// get amount of balls to bingo, from closest line to Bingo.
+    /// </summary>
     public int GetNumbersLeftToBingo()
     {
-        return NumbersLeftToBingo;
+        return ballsLeftToBingo;
     }
 
     /// <summary>
-    /// show numbers left to Bingo in BingoCard
+    /// Check if bingo was found
     /// </summary>
-    protected FCheckBingoResult bingoCheck(Dictionary<int, List<int>> wantedLines, BingoCardBall[] ballDatas)
+    /// <param name="wantedLines">Current rounds WantedLines</param>
+    /// <param name="ballDatas">BingoCards balls to search bingo</param>
+    /// <returns>Returns FCheckBingoResult as result</returns>
+    protected FCheckBingoResult BingoCheck(Dictionary<int, List<int>> wantedLines, BingoCardBall[] ballDatas)
     {
         bool bIsBingo = false;
         int numbersToBingo = 25;

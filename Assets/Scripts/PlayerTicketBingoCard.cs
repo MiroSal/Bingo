@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Inheritet from BingoCard, this class is used in player Bingo ticket.
+/// </summary>
 [System.Serializable]
-public class PLayerBingoCard : BingoCard
+public class PlayerTicketBingoCard : BingoCard
 {
 
     //Ball Image shown in UI
     [Header("Prefab for the ball in BingoCard")]
     [SerializeField]
-    private GameObject BallPrefab = null;
+    private GameObject ballPrefab = null;
 
     //Text copmponent to show number how many ball left to bingo
     protected Text numbersLeftToBingo = null;
@@ -20,21 +23,20 @@ public class PLayerBingoCard : BingoCard
         bingoDirector = FindObjectOfType<BingoDirector>();
         numbersLeftToBingo = gameObject.transform.Find("LeftToBingoText").GetComponent<Text>();
 
+        List<int> addedNumbers = new List<int>();//avoid dublicates
+        Image CardImage = gameObject.transform.Find("CardBG").GetComponent<Image>();
+        FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B;    //Ball numbers prefix letter
+
         FindWantedLines();//get currently wanted lines for win
 
-        List<int> addedNumbers = new List<int>();
+        for (int i = 0; i < 25; i++)//Create UI balls to card
 
-        BingoBallData ballData = new BingoBallData();
-        Image CardImage = gameObject.transform.Find("CardBG").GetComponent<Image>();
-
-        //Create UI balls to card
-        for (int i = 0; i < 25; i++)
         {
-            GameObject ball = Instantiate(BallPrefab);//Instantiate
+            GameObject ball = Instantiate(ballPrefab);//Instantiate
 
             BingoCardBall bingoCardBall = ball.GetComponent<BingoCardBall>();
 
-            ballData = new BingoBallData(bingoBallPrefixEnum, addedNumbers); //Create ballData with balls prefix letter and list of numbers that are already in the card...
+            BingoBallData ballData = new BingoBallData(bingoBallPrefixEnum, addedNumbers); //Create ballData with balls prefix letter and list of numbers that are already in the card...
             bingoCardBall.Init(ballData); //...Initialize cardball with balldata.
 
             if (CardImage)
@@ -55,11 +57,14 @@ public class PLayerBingoCard : BingoCard
         BingoDirector.StartNewRoundDelegate += FindWantedLines; //Bind to delegate.
     }
 
+    /// <summary>
+    /// Binded to CheckBingoDelegate
+    /// </summary>
     private void CheckBingo()
     {
-        BingoCardBall[] Cardballs = GetComponentsInChildren<BingoCardBall>();
+        BingoCardBall[] Cardballs = GetComponentsInChildren<BingoCardBall>();//get all balldatas from this card
 
-        FCheckBingoResult result = bingoCheck(wantedLines, Cardballs);
+        FCheckBingoResult result = BingoCheck(wantedLines, Cardballs);//check if Bingo was found
         SetNumbersLeftToBingo(result.numbersToBingo);
 
         //BINGO!!!
@@ -71,7 +76,7 @@ public class PLayerBingoCard : BingoCard
                 {
                     if (ball.ballData.CurrentValue == result.bingoDataLine[i].CurrentValue)
                     {
-                        ball.markAsBingoLine();
+                        ball.MarkBall();
                     }
                 }
             }
@@ -80,11 +85,22 @@ public class PLayerBingoCard : BingoCard
                 bingoDirector.AnnounceBingo();
         }
     }
+
+    /// <summary>
+    /// Set text in Text component to show how many balls is left to bingo.
+    /// </summary>
+    /// <param name="numbersLeft">Numbers left to Bingo</param>
     private void SetNumbersLeftToBingo(int numbersLeft)
     {
         if (numbersLeftToBingo)
         {
             numbersLeftToBingo.text = "" + numbersLeft;
         }
+    }
+
+    private void OnDisable()
+    {
+        BingoDirector.CheckBingoDelegate -= CheckBingo; //Unbind to delegate.
+        BingoDirector.StartNewRoundDelegate -= FindWantedLines; //Unbind to delegate.
     }
 }

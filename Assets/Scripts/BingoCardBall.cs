@@ -11,15 +11,19 @@ public class BingoCardBall : MonoBehaviour
     //This balls Data
     public BingoBallData ballData;
 
+    //If this ball is going to be shown in UI
     [SerializeField]
     bool changeIsVisual = false;
 
     private void Awake()
     {
-        BingoDirector.NumberAnnouncedDelegate += CheckNumber; //Register to delegate.
+        BingoDirector.NumberAnnouncedDelegate += CheckNumber; //Bind to delegate.
     }
 
-    //Initialize with BallData
+    /// <summary>
+    /// Initialize this ball with data
+    /// </summary>
+    /// <param name="BallData">Data to Initialize with</param>
     public void Init(BingoBallData BallData)
     {
         ballData = BallData;
@@ -32,7 +36,10 @@ public class BingoCardBall : MonoBehaviour
         }
     }
 
-    //Check if this balls number was announced
+    /// <summary>
+    /// Check if the number of this ball was announced
+    /// </summary>
+    /// <param name="number">Number to check</param>
     void CheckNumber(int number)
     {
         if (ballData.CurrentValue == number)
@@ -47,7 +54,10 @@ public class BingoCardBall : MonoBehaviour
         }
     }
 
-    public void markAsBingoLine()
+    /// <summary>
+    /// Mark the ball as found
+    /// </summary>
+    public void MarkBall()
     {
         if (ballData.bIsMarked)
         {
