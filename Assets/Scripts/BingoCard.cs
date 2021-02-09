@@ -52,13 +52,16 @@ public class BingoCard : MonoBehaviour
         for (int i = 0; i < 25; i++)
         {
             BingoCardBall ball = gameObject.AddComponent<BingoCardBall>(); //Create ball to this card...
-            ball.Init(new BingoBallData(bingoBallPrefixEnum, addedNumbers)); //and Initilize it with data.
+            if (ball)
+            {
+                ball.Init(new BingoBallData(bingoBallPrefixEnum, addedNumbers)); //and Initilize it with data.
 
-            bingoBallPrefixEnum++; //Move to next prefix letter, if none start again from next line.
-            if (bingoBallPrefixEnum == FBingoBallPrefixEnum.None)
-                bingoBallPrefixEnum = FBingoBallPrefixEnum.B;
+                bingoBallPrefixEnum++; //Move to next prefix letter, if none start again from next line.
+                if (bingoBallPrefixEnum == FBingoBallPrefixEnum.None)
+                    bingoBallPrefixEnum = FBingoBallPrefixEnum.B;
 
-            addedNumbers.Add(ball.ballData.CurrentValue);//Add created ball to ignore list.
+                addedNumbers.Add(ball.ballData.CurrentValue);//Add created ball to ignore list.
+            }
         }
 
         CheckBingo();//CheckBingo to set balls left to bingo.

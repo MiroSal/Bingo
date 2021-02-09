@@ -10,20 +10,53 @@ public class Competitor : MonoBehaviour
     private int BingoCardsOwned = 3;
 
     //Text component to show number how many balls left to bingo
-    private Text numbersLeftToBingo = null;
+    private Text numbersLeftToBingo_Text = null;
+
+    //Image Component for Competitor Icon
+    private Image icon_Image = null;
+  
+    //ScribtableObject that holds or icon possibilities
+    public CompetitorIcons competitorIcons = null;
+
+    //Text component for Competitor name
+    private Text competitorName_Text = null;
+
+    //Name of the Competitor
+    private string competitorName = "";
 
     private void Awake()
     {
-        numbersLeftToBingo = gameObject.transform.Find("NumbersLeft").GetComponent<Text>();
+        numbersLeftToBingo_Text = gameObject.transform.Find("NumbersLeft").GetComponent<Text>();
+        competitorName_Text = gameObject.transform.Find("Competitor").gameObject.transform.Find("PlayerName").GetComponent<Text>();
+        icon_Image = gameObject.transform.Find("Competitor").gameObject.transform.Find("CompetitorIcon").GetComponent<Image>();
+
+        if (icon_Image != null && competitorIcons != null)
+        {
+            icon_Image.sprite = competitorIcons.GetRandomIcon();
+        }
+        else
+        {
+            Debug.LogWarning("icon_Image or competitorIcons scribtableObject in Competitor was null");
+        }
+
+        if (competitorName_Text != null)
+        {
+            competitorName = CompetitorNames.GetRandomName();
+            competitorName_Text.text = competitorName;
+        }
+        else
+        {
+            Debug.LogWarning("competitorName_Text was null in Competitor");
+        }
 
         for (int i = 0; i < BingoCardsOwned; i++)//Create wanted amount of Cards for this Competitor
         {
             BingoCard card = gameObject.AddComponent<BingoCard>();
             card.Initialize();
 
-            if (numbersLeftToBingo)
+            if (numbersLeftToBingo_Text)
             {
-                numbersLeftToBingo.text = "" + card.GetNumbersLeftToBingo();
+                numbersLeftToBingo_Text.text = "" + card.GetNumbersLeftToBingo();
             }
         }
 
@@ -36,7 +69,7 @@ public class Competitor : MonoBehaviour
     /// </summary>
     private void SetNumbersLeftToBingo()
     {
-        if (numbersLeftToBingo)
+        if (numbersLeftToBingo_Text)
         {
             BingoCard[] cards = GetComponents<BingoCard>();
             int ballsToBingo = 25;
@@ -48,7 +81,7 @@ public class Competitor : MonoBehaviour
                     ballsToBingo = card.GetNumbersLeftToBingo();
                 }
             }
-            numbersLeftToBingo.text = "" + ballsToBingo;
+            numbersLeftToBingo_Text.text = "" + ballsToBingo;
         }
     }
 
