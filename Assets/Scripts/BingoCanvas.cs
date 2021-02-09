@@ -56,7 +56,7 @@ public class BingoCanvas : MonoBehaviour
                 ContinueButton.SetActive(false);
         }
 
-        bingoDirector.PauseGame();
+        Bingo.PauseGame();
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ public class BingoCanvas : MonoBehaviour
             canvas.enabled = false;
 
         bingoDirector.StartNewRound();
-        bingoDirector.UnPauseGame();
+        Bingo.SetToDefaultSpeed();
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public class BingoCanvas : MonoBehaviour
     /// </summary>
     public void LoadMainMenu()
     {
-        bingoDirector.UnPauseGame();
+        Bingo.SetToDefaultSpeed();
         bingoDirector.EndGameMode();
         SceneLoader.LoadScene(SceneLoader.Scene.MainMenu);//Unbind Delegate
     }

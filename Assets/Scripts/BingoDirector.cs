@@ -35,7 +35,6 @@ public class BingoDirector : MonoBehaviour
     private void Awake()
     {
         SortWantedLines();
-        Time.timeScale = 10;
     }
 
     /// <summary>
@@ -147,21 +146,5 @@ public class BingoDirector : MonoBehaviour
     public void EndGameMode()
     {
         Roundindex = 0;
-    }
-
-    /// <summary>
-    /// Pause Game
-    /// </summary>
-    public void PauseGame()
-    {
-        Time.timeScale = 0;
-    }
-
-    /// <summary>
-    /// UnPauseGame
-    /// </summary>
-    public void UnPauseGame()
-    {
-        Time.timeScale = 1;
     }
 }
