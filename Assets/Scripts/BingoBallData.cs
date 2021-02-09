@@ -10,6 +10,9 @@ public struct BingoBallData
     //Balls number
     public int CurrentValue { get; private set; }
 
+    //Is this ball announced
+    public bool bIsMarked { get; set; }
+
     //Balls Prefix letter
     public FBingoBallPrefixEnum BingoBallPrefixEnum { get; private set; }
 
@@ -19,6 +22,7 @@ public struct BingoBallData
     public BingoBallData(int BallValue)
     {
         CurrentValue = BallValue;
+        bIsMarked = false;
 
         //Find the right Prefix for the number.
         if (CurrentValue <= 15 && CurrentValue > 0)
@@ -55,6 +59,7 @@ public struct BingoBallData
     {
         int minNumber = 0;
         int maxNumber = 0;
+        bIsMarked = false;
         BingoBallPrefixEnum = bingoTicketTextEnum;
 
         //Find the right range for the prefix letter

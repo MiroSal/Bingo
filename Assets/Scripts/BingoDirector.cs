@@ -117,6 +117,8 @@ public class BingoDirector : MonoBehaviour
         {
             if (allWantedLines.Count - 1 > Roundindex) { BingoFoundDelegate(false); }
             else { BingoFoundDelegate(true); } //if this round was the last
+
+            Debug.Log("BINGOOOOO");
         }
     }
 
@@ -141,25 +143,8 @@ public class BingoDirector : MonoBehaviour
         }
     }
 
-
     public void EndGameMode()
     {
         Roundindex = 0;
-    }
-
-    /// <summary>
-    /// Pause Game
-    /// </summary>
-    public void PauseGame()
-    {
-        Time.timeScale = 0;
-    }
-
-    /// <summary>
-    /// UnPauseGame
-    /// </summary>
-    public void UnPauseGame()
-    {
-        Time.timeScale = 4;
     }
 }

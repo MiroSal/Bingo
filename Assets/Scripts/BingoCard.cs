@@ -14,53 +14,54 @@ public enum FBingoBallPrefixEnum
     None
 }
 
+public struct FCheckBingoResult
+{
+    public bool bIsBingo { get; private set; }
+    public int numbersToBingo { get; private set; }
+    public List<BingoBallData> bingoDataLine { get; private set; }
+    public FCheckBingoResult(bool wasBingo, int numbersToBingo, List<BingoBallData> bingoDataLine)
+    {
+        bIsBingo = wasBingo;
+        this.numbersToBingo = numbersToBingo;
+        this.bingoDataLine = bingoDataLine;
+    }
+}
+
+/// <summary>
+/// Base class for Bingo Cards, this version creates only Bingo Card data.
+/// </summary>
 public class BingoCard : MonoBehaviour
 {
-    //Ball Image shown in UI
-    [Header("Prefab for the ball in BingoCard")][SerializeField]
-    private GameObject BallPrefab = null;
-
     //BingoDirector
-    private BingoDirector bingoDirector = null;
-
-    //UI balls in card
-    private GameObject[] balls = new GameObject[25];
+    protected BingoDirector bingoDirector = null;
 
     //Currently wanted lines
-    private Dictionary<int, List<int>> wantedLines = new Dictionary<int, List<int>>();
+    protected Dictionary<int, List<int>> wantedLines = new Dictionary<int, List<int>>();
 
-    //Ball numbers prefix letter
-    private FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B;
+    //Unmarked balls to bingo, from closest line to Bingo.
+    private int ballsLeftToBingo = 25;
 
-    private void Awake()
+    public void Initialize()
     {
         bingoDirector = FindObjectOfType<BingoDirector>();
+        List<int> addedNumbers = new List<int>(); //avoid dublicates
+        FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B; //Ball numbers prefix letter
 
-        FindWantedLines();//get currently wanted lines for win
+        FindWantedLines();
 
-        List<int> addedNumbers = new List<int>();
-        BingoBallData ballData = new BingoBallData();
-
-        //Create UI balls to card
         for (int i = 0; i < 25; i++)
         {
-            balls[i] = Instantiate(BallPrefab);//Instantiate
-            if (balls[i] == null) { Debug.Log("instantiate was fail."); continue; }
-
-            BingoCardBall bingoCardBall = balls[i].GetComponent<BingoCardBall>();
-            if (bingoCardBall == null) { Debug.Log("BingoCardBall component was not found"); continue; }
-
-            ballData = new BingoBallData(bingoBallPrefixEnum, addedNumbers); //Create ballData with balls prefix letter and list of numbers that are already in the card...
-            bingoCardBall.Init(ballData); //...Initialize cardball with balldata.
-
-            balls[i].transform.SetParent(this.transform, false);//set as child.
+            BingoCardBall ball = gameObject.AddComponent<BingoCardBall>(); //Create ball to this card...
+            ball.Init(new BingoBallData(bingoBallPrefixEnum, addedNumbers)); //and Initilize it with data.
 
             bingoBallPrefixEnum++; //Move to next prefix letter, if none start again from next line.
             if (bingoBallPrefixEnum == FBingoBallPrefixEnum.None)
                 bingoBallPrefixEnum = FBingoBallPrefixEnum.B;
 
-            addedNumbers.Add(ballData.CurrentValue);//Add created ball to ignore list.
+            addedNumbers.Add(ball.ballData.CurrentValue);//Add created ball to ignore list.
         }
+
+        CheckBingo();//CheckBingo to set balls left to bingo.
 
         BingoDirector.CheckBingoDelegate += CheckBingo; //Bind to delegate.
         BingoDirector.StartNewRoundDelegate += FindWantedLines; //Bind to delegate.
@@ -69,45 +70,24 @@ public class BingoCard : MonoBehaviour
     /// <summary>
     /// Binded to CheckBingoDelegate
     /// </summary>
-    void CheckBingo()
+    private void CheckBingo()
     {
-        bool bIsBingo = false;
-        List<BingoCardBall> bingoLine = new List<BingoCardBall>();
+        BingoCardBall[] Cardballs = gameObject.GetComponents<BingoCardBall>();//get all balldatas from this Bingo Card
 
-        foreach (KeyValuePair<int, List<int>> WantedLine in wantedLines)//Loop through all WantedLines
-        {
-            bingoLine.Clear();//Clear last loop data
-            bIsBingo = true; //Bingo is true untill non marked ball is found.
-           
-            foreach (int item in WantedLine.Value)//Check foreach item if it is marked or not.
-            {
-                BingoCardBall ball = balls[item].GetComponent<BingoCardBall>();
-                if (ball == null)
-                    break;
-
-                if (!ball.bIsMarked)
-                {
-                    bIsBingo = false;
-                    break;
-                }
-                bingoLine.Add(ball);//If marked add to list.
-            }
-            if (bIsBingo)
-                break;
-        }
+        FCheckBingoResult result = BingoCheck(wantedLines, Cardballs);//check if Bingo was found
+        ballsLeftToBingo = result.numbersToBingo;
 
         //BINGO!!!
-        if (bIsBingo)
+        if (result.bIsBingo)
         {
-            foreach (BingoCardBall item in bingoLine)//Change Color to visualize line where BINGO was found.
+            foreach (BingoCardBall ball in Cardballs)
             {
-                if (item == null)
-                    continue;
-
-                Image image = item.GetComponent<Image>();
-                if (image != null)
+                for (int i = 0; i < result.bingoDataLine.Count; i++)
                 {
-                    image.color = Color.blue;
+                    if (ball.ballData.CurrentValue == result.bingoDataLine[i].CurrentValue)
+                    {
+                        ball.MarkBall();
+                    }
                 }
             }
 
@@ -116,15 +96,68 @@ public class BingoCard : MonoBehaviour
         }
     }
 
-    void FindWantedLines()
+    /// <summary>
+    /// Get current rounds WantedLines
+    /// </summary>
+    protected void FindWantedLines()
     {
         if (bingoDirector != null)
             wantedLines = bingoDirector.GetWantedLines();//get currently wanted lines for win
     }
 
+    /// <summary>
+    /// get amount of balls to bingo, from closest line to Bingo.
+    /// </summary>
+    public int GetNumbersLeftToBingo()
+    {
+        return ballsLeftToBingo;
+    }
+
+    /// <summary>
+    /// Check if bingo was found
+    /// </summary>
+    /// <param name="wantedLines">Current rounds WantedLines</param>
+    /// <param name="ballDatas">BingoCards balls to search bingo</param>
+    /// <returns>Returns FCheckBingoResult as result</returns>
+    protected FCheckBingoResult BingoCheck(Dictionary<int, List<int>> wantedLines, BingoCardBall[] ballDatas)
+    {
+        bool bIsBingo = false;
+        int numbersToBingo = 25;
+        List<BingoBallData> bingoDataLine = new List<BingoBallData>();
+
+        foreach (KeyValuePair<int, List<int>> WantedLine in wantedLines)//Loop through all WantedLines
+        {
+            bingoDataLine.Clear();//Clear last loop data
+            bIsBingo = true; //Bingo is true untill non marked ball is found.
+            int leftToBingo = 0;//count unmarked numbers to find amount left to Bingo
+
+            foreach (int item in WantedLine.Value)//Check foreach item if it is marked or not.
+            {
+                BingoBallData ballData = ballDatas[item].ballData;
+
+                if (!ballData.bIsMarked)
+                {
+                    bIsBingo = false;
+                    leftToBingo++;
+                }
+                bingoDataLine.Add(ballData);//If marked add to list.
+            }
+
+            if (leftToBingo < numbersToBingo)
+            {
+                numbersToBingo = leftToBingo;
+            }
+
+            if (bIsBingo)
+                break;
+        }
+
+        return new FCheckBingoResult(bIsBingo, numbersToBingo, bingoDataLine);
+    }
     private void OnDisable()
     {
         BingoDirector.CheckBingoDelegate -= CheckBingo; //Unbind to delegate.
         BingoDirector.StartNewRoundDelegate -= FindWantedLines; //Unbind to delegate.
     }
 }
+
