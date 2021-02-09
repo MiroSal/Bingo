@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Static functions to call
+/// Static functions to call for Buttons
 /// </summary>
 public class Bingo : MonoBehaviour
 {
@@ -32,5 +32,15 @@ public class Bingo : MonoBehaviour
         {
             Time.timeScale = speed;
         }
+    }
+
+    public static void LoadMainMenu()
+    {
+        SceneLoader.LoadScene(SceneLoader.Scene.MainMenu);
+    }
+
+    public static void QuitGame()
+    {
+        Application.Quit();
     }
 }
