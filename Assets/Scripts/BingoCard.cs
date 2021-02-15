@@ -95,7 +95,17 @@ public class BingoCard : MonoBehaviour
             }
 
             if (bingoDirector)
+            {
                 bingoDirector.AnnounceBingo();
+
+                Competitor competitor = GetComponentInParent<Competitor>();
+                if (competitor)
+                {
+                    string competitorName = competitor.competitorName;
+                    Sprite avatarIcon = competitor.icon_Image.sprite;
+                    bingoDirector.AnnounceRoundWinner(competitorName, avatarIcon);
+                }
+            }
         }
     }
 

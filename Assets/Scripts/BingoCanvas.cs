@@ -9,13 +9,19 @@ using UnityEngine.UI;
 public class BingoCanvas : MonoBehaviour
 {
     //BingoCanvas
-    Canvas canvas = null;
+    private Canvas canvas = null;
 
     //Button to get back to MainMenu
-    GameObject MainMenuButton = null; 
-    
+    private GameObject MainMenuButton = null;
+
     //Button to get back to MainMenu
-    GameObject ContinueButton = null;
+    private GameObject ContinueButton = null;
+
+    //GridLayoutGroup to visualize competitors that found Bingo this round
+    private GameObject Competitors = null;
+
+    //Roundwinner prefab
+    public GameObject RoundWinner = null;
 
     //BingoDirector
     private BingoDirector bingoDirector = null;
@@ -23,20 +29,23 @@ public class BingoCanvas : MonoBehaviour
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
-        if(canvas)
-        canvas.enabled = false;
+        if (canvas)
+            canvas.enabled = false;
 
         MainMenuButton = gameObject.transform.Find("MainMenuButton").gameObject;
         if (MainMenuButton)
             MainMenuButton.SetActive(false);
-        
+
         ContinueButton = gameObject.transform.Find("ContinueButton").gameObject;
         if (ContinueButton)
             ContinueButton.SetActive(true);
 
+        Competitors = gameObject.transform.Find("RoundWinners").gameObject;
+
         bingoDirector = FindObjectOfType<BingoDirector>();
 
         BingoDirector.BingoFoundDelegate += BingoFound;//Bind to delegate
+        BingoDirector.AnnounceRoundWinnerDelegate += AddRoundWinner;//Bind to delegate
     }
 
     /// <summary>
@@ -60,12 +69,41 @@ public class BingoCanvas : MonoBehaviour
     }
 
     /// <summary>
+    /// Add Round winner to canvas to show all winners
+    /// </summary>
+    /// <param name="Name">Name of the winner</param>
+    /// <param name="AvatarIcon">Avatar of the winner</param>
+    public void AddRoundWinner(string Name, Sprite AvatarIcon)
+    {
+        //check if winner is already added
+        RoundWinner[] winners = Competitors.GetComponentsInChildren<RoundWinner>();
+        foreach (RoundWinner winner in winners)
+        {
+            if (winner.text.text.ToString() == Name)
+            {
+                return;
+            }
+        }
+
+        GameObject roundWinner = Instantiate(RoundWinner);
+        if (roundWinner)
+        {
+            roundWinner.GetComponent<RoundWinner>().Setup(Name, AvatarIcon);
+            roundWinner.transform.SetParent(Competitors.transform, false);//set as child.
+        }
+    }
+
+    /// <summary>
     /// Continue Bingo, Binded to continue Button
     /// </summary>
     public void Continue()
     {
         if (canvas)
             canvas.enabled = false;
+
+        //remove all previous round winners
+        foreach (Transform child in Competitors.transform)
+            GameObject.Destroy(child.gameObject);
 
         bingoDirector.StartNewRound();
         Bingo.SetToDefaultSpeed();

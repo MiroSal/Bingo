@@ -120,6 +120,10 @@ public class CompetitorNames : MonoBehaviour
     "Anna",
     };
 
+    /// <summary>
+    /// Get random Name from the array
+    /// </summary>
+    /// <returns></returns>
     public static string GetRandomName()
     {
         string name = "";

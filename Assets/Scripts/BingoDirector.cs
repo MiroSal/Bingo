@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BingoDirector : MonoBehaviour
 {
@@ -11,8 +12,15 @@ public class BingoDirector : MonoBehaviour
     public static event OnCheckBingoDelegate CheckBingoDelegate;
     public delegate void OnBingoFoundDelegate(bool wasLastRound);
     public static event OnBingoFoundDelegate BingoFoundDelegate;
+    public delegate void OnAnnounceRoundWinnerDelegate(string Name, Sprite AvatarIcon);
+    public static event OnAnnounceRoundWinnerDelegate AnnounceRoundWinnerDelegate;
     public delegate void OnStartNewRoundDelegate();
     public static event OnStartNewRoundDelegate StartNewRoundDelegate;
+
+    /// <summary>
+    /// ScribtableObject that holds or icon possibilities
+    /// </summary>
+    public CompetitorIcons competitorIcons = null;
 
     /// <summary>
     /// Current GameModes LineData.
@@ -122,6 +130,18 @@ public class BingoDirector : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Announce round winner
+    /// </summary>
+    /// <param name="Name">Winners name</param>
+    /// <param name="AvatarIcon">Winners avatar</param>
+    public void AnnounceRoundWinner(string Name, Sprite AvatarIcon)
+    {
+        if (AnnounceRoundWinnerDelegate != null)
+        {
+            AnnounceRoundWinnerDelegate(Name, AvatarIcon);
+        }
+    }
     /// <summary>
     /// Get scribtableobjects wanted linedata
     /// </summary>

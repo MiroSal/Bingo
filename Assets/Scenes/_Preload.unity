@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef91d1a9329bfc498a5772bf4a047ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  competitorIcons: {fileID: 11400000, guid: c4313da1c2440cb43b9f97e36f8a9cf2, type: 2}
   currentGameModeLineDatas:
   - {fileID: 11400000, guid: 7d79ff0f3a851484f93f6696419f6654, type: 2}
   - {fileID: 11400000, guid: ceb89759e0972c5408654381ae69d6df, type: 2}

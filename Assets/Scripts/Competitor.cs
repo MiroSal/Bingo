@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class Competitor : MonoBehaviour
 {
+    //BingoDirector
+    protected BingoDirector bingoDirector = null;
+
     //Amount of BingoCards this competitor has
     [SerializeField]
     private int BingoCardsOwned = 3;
@@ -13,30 +16,32 @@ public class Competitor : MonoBehaviour
     private Text numbersLeftToBingo_Text = null;
 
     //Image Component for Competitor Icon
-    private Image icon_Image = null;
-  
-    //ScribtableObject that holds or icon possibilities
-    public CompetitorIcons competitorIcons = null;
+    public Image icon_Image { get; private set; } = null;
 
     //Text component for Competitor name
     private Text competitorName_Text = null;
 
     //Name of the Competitor
-    private string competitorName = "";
+    public string competitorName { get; private set; } = "";
 
     private void Awake()
     {
+        bingoDirector = FindObjectOfType<BingoDirector>();
+
         numbersLeftToBingo_Text = gameObject.transform.Find("NumbersLeft").GetComponent<Text>();
         competitorName_Text = gameObject.transform.Find("Competitor").gameObject.transform.Find("PlayerName").GetComponent<Text>();
         icon_Image = gameObject.transform.Find("Competitor").gameObject.transform.Find("CompetitorIcon").GetComponent<Image>();
-
-        if (icon_Image != null && competitorIcons != null)
+      
+        if (bingoDirector)
         {
-            icon_Image.sprite = competitorIcons.GetRandomIcon();
-        }
-        else
-        {
-            Debug.LogWarning("icon_Image or competitorIcons scribtableObject in Competitor was null");
+            if (icon_Image != null && bingoDirector.competitorIcons != null)
+            {
+                icon_Image.sprite = bingoDirector.competitorIcons.GetRandomIcon();
+            }
+            else
+            {
+                Debug.LogWarning("icon_Image or competitorIcons scribtableObject in Competitor was null");
+            }
         }
 
         if (competitorName_Text != null)
@@ -51,12 +56,14 @@ public class Competitor : MonoBehaviour
 
         for (int i = 0; i < BingoCardsOwned; i++)//Create wanted amount of Cards for this Competitor
         {
-            BingoCard card = gameObject.AddComponent<BingoCard>();
-            card.Initialize();
+            GameObject card = new GameObject("Card" + i);
+            card.transform.SetParent(transform, false);
+            BingoCard bingocard = card.gameObject.AddComponent<BingoCard>();
+            bingocard.Initialize();
 
             if (numbersLeftToBingo_Text)
             {
-                numbersLeftToBingo_Text.text = "" + card.GetNumbersLeftToBingo();
+                numbersLeftToBingo_Text.text = "" + bingocard.GetNumbersLeftToBingo();
             }
         }
 
@@ -71,7 +78,7 @@ public class Competitor : MonoBehaviour
     {
         if (numbersLeftToBingo_Text)
         {
-            BingoCard[] cards = GetComponents<BingoCard>();
+            BingoCard[] cards = GetComponentsInChildren<BingoCard>();
             int ballsToBingo = 25;
 
             foreach (BingoCard card in cards)
