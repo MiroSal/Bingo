@@ -9,7 +9,6 @@ using UnityEngine.UI;
 [System.Serializable]
 public class PlayerTicketBingoCard : BingoCard
 {
-
     //Ball Image shown in UI
     [Header("Prefab for the ball in BingoCard")]
     [SerializeField]
@@ -25,7 +24,7 @@ public class PlayerTicketBingoCard : BingoCard
 
         List<int> addedNumbers = new List<int>();//avoid dublicates
         Image CardImage = gameObject.transform.Find("CardBG").GetComponent<Image>();
-        FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B;    //Ball numbers prefix letter
+        FBingoBallPrefixEnum bingoBallPrefixEnum = FBingoBallPrefixEnum.B;//Ball numbers prefix letter
 
         FindWantedLines();//get currently wanted lines for win
 
@@ -82,7 +81,13 @@ public class PlayerTicketBingoCard : BingoCard
             }
 
             if (bingoDirector)
+            {
                 bingoDirector.AnnounceBingo();
+                if (PlayerPrefs.HasKey("AvatarName") && PlayerPrefs.HasKey("AvatarIcon"))
+                {
+                    bingoDirector.AnnounceRoundWinner(PlayerPrefs.GetString("AvatarName"), bingoDirector.competitorIcons.IconSprites[PlayerPrefs.GetInt("AvatarIcon")]);
+                }
+            }
         }
     }
 
