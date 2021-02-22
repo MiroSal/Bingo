@@ -104,6 +104,15 @@ public class BingoDirector : MonoBehaviour
         return new Dictionary<int, List<int>>();
     }
 
+    public float GetCurrentRoundsWinnings()
+    {
+        if (currentGameModeLineDatas.Count > Roundindex)
+        {
+            return currentGameModeLineDatas[Roundindex].GetRoundWinnings();
+        }
+        return 0;
+    }
+
     /// <summary>
     /// Broadcast new number
     /// </summary>

@@ -26,6 +26,9 @@ public class BingoCanvas : MonoBehaviour
     //BingoDirector
     private BingoDirector bingoDirector = null;
 
+    //Winnings
+    private Text MoneyText = null;
+
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
@@ -42,6 +45,8 @@ public class BingoCanvas : MonoBehaviour
 
         Competitors = gameObject.transform.Find("RoundWinners").gameObject;
 
+        MoneyText = gameObject.transform.Find("Money").GetComponentInChildren<Text>();
+
         bingoDirector = FindObjectOfType<BingoDirector>();
 
         BingoDirector.BingoFoundDelegate += BingoFound;//Bind to delegate
@@ -55,6 +60,9 @@ public class BingoCanvas : MonoBehaviour
     {
         if (canvas)
             canvas.enabled = true;
+
+        if (MoneyText && bingoDirector)
+            MoneyText.text = bingoDirector.GetCurrentRoundsWinnings().ToString();
 
         if (wasLastRound)
         {
@@ -79,7 +87,7 @@ public class BingoCanvas : MonoBehaviour
         RoundWinner[] winners = Competitors.GetComponentsInChildren<RoundWinner>();
         foreach (RoundWinner winner in winners)
         {
-            if (winner.text.text.ToString() == Name)
+            if (winner && winner.text.text.ToString() == Name)
             {
                 return;
             }
@@ -90,6 +98,20 @@ public class BingoCanvas : MonoBehaviour
         {
             roundWinner.GetComponent<RoundWinner>().Setup(Name, AvatarIcon);
             roundWinner.transform.SetParent(Competitors.transform, false);//set as child.
+        }
+
+        if (PlayerPrefs.HasKey("Money") && PlayerPrefs.HasKey("AvatarName"))
+        {
+            if (Name == PlayerPrefs.GetString("AvatarName"))
+            {
+                float money = PlayerPrefs.GetFloat("Money");
+                if (bingoDirector)
+                {
+                    money += bingoDirector.GetCurrentRoundsWinnings();
+                }               
+                PlayerPrefs.SetFloat("Money", money);
+                PlayerPrefs.Save();
+            }
         }
     }
 

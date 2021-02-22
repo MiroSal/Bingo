@@ -85,7 +85,7 @@ public class PlayerTicketBingoCard : BingoCard
                 bingoDirector.AnnounceBingo();
                 if (PlayerPrefs.HasKey("AvatarName") && PlayerPrefs.HasKey("AvatarIcon"))
                 {
-                    bingoDirector.AnnounceRoundWinner(PlayerPrefs.GetString("AvatarName"), bingoDirector.competitorIcons.IconSprites[PlayerPrefs.GetInt("AvatarIcon")]);
+                    bingoDirector.AnnounceRoundWinner(PlayerPrefs.GetString("AvatarName"), bingoDirector.competitorIcons.IconSprites[PlayerPrefs.GetInt("AvatarIcon")]);                 
                 }
             }
         }

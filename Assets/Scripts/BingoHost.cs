@@ -18,7 +18,11 @@ public class BingoHost : MonoBehaviour
     public Vector3 IdleLocation = new Vector3(0, 0, 0);
     public Vector3 PipeLocation = new Vector3(0, 0, 0);
 
-   
+    private AudioSource audioSource = null;
+
+    public AudioClip bingoBallMachineRollSound = null;
+    public AudioClip monitorVacuumSound = null;
+
     [SerializeField]
     private float idleTime = 1;
     [SerializeField]
@@ -58,6 +62,8 @@ public class BingoHost : MonoBehaviour
 
         if (smokeEffect == null) { Debug.Log("smokeEffect was null"); return; }
         smokeParticleSystem = smokeEffect.GetComponent<ParticleSystem>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -70,11 +76,13 @@ public class BingoHost : MonoBehaviour
             switch (state)
             {
                 case HostStateEnum.HS_Idle:
+                    if (bingoBallMachineRollSound) PlaySound(bingoBallMachineRollSound);
                     timer = machineTime;
                     gameObject.transform.position = MachineLocation;
                     state = HostStateEnum.HS_Machine;
                     break;
                 case HostStateEnum.HS_Machine:
+                    if (monitorVacuumSound) PlaySound(monitorVacuumSound);
                     timer = pipeTime;
                     gameObject.transform.position = PipeLocation;
                     state = HostStateEnum.HS_Pipe;
@@ -94,6 +102,15 @@ public class BingoHost : MonoBehaviour
                     break;
             }
             smokeParticleSystem.Play();
+        }
+    }
+
+    void PlaySound(AudioClip clipToPlay)
+    {
+        if (clipToPlay)
+        {
+            if (audioSource)
+                audioSource.PlayOneShot(clipToPlay);
         }
     }
 }

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 902630386ecfbb4409e89292454f90dd, type: 3}
   m_Name: BasicLineData 2
   m_EditorClassIdentifier: 
+  RoundWinnings: 25.36
   bingoLineData:
   - rows:
     - row: 0100000000
