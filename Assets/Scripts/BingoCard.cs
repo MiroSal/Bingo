@@ -112,10 +112,18 @@ public class BingoCard : MonoBehaviour
     /// <summary>
     /// Get current rounds WantedLines
     /// </summary>
-    protected void FindWantedLines()
+    virtual protected void FindWantedLines()
     {
         if (bingoDirector != null)
-            wantedLines = bingoDirector.GetWantedLines();//get currently wanted lines for win
+            wantedLines = bingoDirector.GetWantedLines();//get currently wanted lines for win     
+
+        //Find amount balls left for the retrieved linedata
+        BingoCardBall[] Cardballs = GetComponentsInChildren<BingoCardBall>();//get all balldatas from this card
+        if (Cardballs.Length > 0)
+        {
+            FCheckBingoResult result = BingoCheck(wantedLines, Cardballs);//check if Bingo was found
+            ballsLeftToBingo = result.numbersToBingo;
+        }
     }
 
     /// <summary>

@@ -62,30 +62,32 @@ public class PlayerTicketBingoCard : BingoCard
     private void CheckBingo()
     {
         BingoCardBall[] Cardballs = GetComponentsInChildren<BingoCardBall>();//get all balldatas from this card
-
-        FCheckBingoResult result = BingoCheck(wantedLines, Cardballs);//check if Bingo was found
-        SetNumbersLeftToBingo(result.numbersToBingo);
-
-        //BINGO!!!
-        if (result.bIsBingo)
+        if (Cardballs.Length > 0)
         {
-            foreach (BingoCardBall ball in Cardballs)
+            FCheckBingoResult result = BingoCheck(wantedLines, Cardballs);//check if Bingo was found
+            SetNumbersLeftToBingo(result.numbersToBingo);
+
+            //BINGO!!!
+            if (result.bIsBingo)
             {
-                for (int i = 0; i < result.bingoDataLine.Count; i++)
+                foreach (BingoCardBall ball in Cardballs)
                 {
-                    if (ball.ballData.CurrentValue == result.bingoDataLine[i].CurrentValue)
+                    for (int i = 0; i < result.bingoDataLine.Count; i++)
                     {
-                        ball.MarkBall();
+                        if (ball.ballData.CurrentValue == result.bingoDataLine[i].CurrentValue)
+                        {
+                            ball.MarkBall();
+                        }
                     }
                 }
-            }
 
-            if (bingoDirector)
-            {
-                bingoDirector.AnnounceBingo();
-                if (PlayerPrefs.HasKey("AvatarName") && PlayerPrefs.HasKey("AvatarIcon"))
+                if (bingoDirector)
                 {
-                    bingoDirector.AnnounceRoundWinner(PlayerPrefs.GetString("AvatarName"), bingoDirector.competitorIcons.IconSprites[PlayerPrefs.GetInt("AvatarIcon")]);                 
+                    bingoDirector.AnnounceBingo();
+                    if (PlayerPrefs.HasKey("AvatarName") && PlayerPrefs.HasKey("AvatarIcon"))
+                    {
+                        bingoDirector.AnnounceRoundWinner(PlayerPrefs.GetString("AvatarName"), bingoDirector.competitorIcons.IconSprites[PlayerPrefs.GetInt("AvatarIcon")]);
+                    }
                 }
             }
         }
@@ -101,6 +103,13 @@ public class PlayerTicketBingoCard : BingoCard
         {
             numbersLeftToBingo.text = "" + numbersLeft;
         }
+    }
+
+    protected override void FindWantedLines()
+    {
+        base.FindWantedLines();//Call parent version of this function
+
+        SetNumbersLeftToBingo(GetNumbersLeftToBingo());
     }
 
     private void OnDisable()
