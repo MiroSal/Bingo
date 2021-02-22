@@ -30,9 +30,7 @@ public class BingoHost : MonoBehaviour
     [SerializeField]
     private float pipeTime = 1;
 
-    //Particle Effects
-    [SerializeField]
-    private GameObject smokeEffect;
+    public ParticleSystem smokeEffect;
 
     //Timer for next state
     private float timer = 0;
@@ -60,9 +58,6 @@ public class BingoHost : MonoBehaviour
         state = HostStateEnum.HS_Idle;
         timer = idleTime;
 
-        if (smokeEffect == null) { Debug.Log("smokeEffect was null"); return; }
-        smokeParticleSystem = smokeEffect.GetComponent<ParticleSystem>();
-
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -73,23 +68,24 @@ public class BingoHost : MonoBehaviour
         //Loop hosts state with timer at the moment
         if (timer < 0)
         {
+            Vector3 SpawnLocation = Vector3.zero;
             switch (state)
             {
                 case HostStateEnum.HS_Idle:
                     if (bingoBallMachineRollSound) PlaySound(bingoBallMachineRollSound);
                     timer = machineTime;
-                    gameObject.transform.position = MachineLocation;
+                    SpawnLocation = MachineLocation;
                     state = HostStateEnum.HS_Machine;
                     break;
                 case HostStateEnum.HS_Machine:
                     if (monitorVacuumSound) PlaySound(monitorVacuumSound);
                     timer = pipeTime;
-                    gameObject.transform.position = PipeLocation;
+                    SpawnLocation = PipeLocation;
                     state = HostStateEnum.HS_Pipe;
                     break;
                 case HostStateEnum.HS_Pipe:
                     timer = idleTime;
-                    gameObject.transform.position = IdleLocation;
+                    SpawnLocation = IdleLocation;
                     state = HostStateEnum.HS_Idle;
                     if (numberAnnouncer != null)
                     {
@@ -101,7 +97,11 @@ public class BingoHost : MonoBehaviour
                 default:
                     break;
             }
-            smokeParticleSystem.Play();
+
+            gameObject.transform.position = SpawnLocation;
+
+            if (smokeEffect)
+                Instantiate(smokeEffect, SpawnLocation, Quaternion.identity);
         }
     }
 

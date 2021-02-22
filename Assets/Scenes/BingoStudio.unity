@@ -742,7 +742,7 @@ MonoBehaviour:
   idleTime: 1
   machineTime: 1
   pipeTime: 1
-  smokeEffect: {fileID: 2113660005139378960, guid: a5914720660154c4cadcba03b18f50ba,
+  smokeEffect: {fileID: 2113660005139379182, guid: a5914720660154c4cadcba03b18f50ba,
     type: 3}
 --- !u!82 &1505710717
 AudioSource:
