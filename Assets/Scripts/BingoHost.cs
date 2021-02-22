@@ -83,6 +83,7 @@ public class BingoHost : MonoBehaviour
                     state = HostStateEnum.HS_Pipe;
                     break;
                 case HostStateEnum.HS_Pipe:
+                    if (monitorVacuumSound) PlaySound(monitorVacuumSound);
                     timer = idleTime;
                     SpawnLocation = IdleLocation;
                     state = HostStateEnum.HS_Idle;

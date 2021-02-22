@@ -29,6 +29,9 @@ public class BingoCanvas : MonoBehaviour
     //Winnings
     private Text MoneyText = null;
 
+    //Audio when Bingo is announced
+    private AudioSource audioSource;
+
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
@@ -48,6 +51,8 @@ public class BingoCanvas : MonoBehaviour
         MoneyText = gameObject.transform.Find("Money").GetComponentInChildren<Text>();
 
         bingoDirector = FindObjectOfType<BingoDirector>();
+
+        audioSource = GetComponent<AudioSource>();
 
         BingoDirector.BingoFoundDelegate += BingoFound;//Bind to delegate
         BingoDirector.AnnounceRoundWinnerDelegate += AddRoundWinner;//Bind to delegate
@@ -72,6 +77,9 @@ public class BingoCanvas : MonoBehaviour
             if (ContinueButton)
                 ContinueButton.SetActive(false);
         }
+
+        if (audioSource)
+            audioSource.Play();
 
         Bingo.PauseGame();
     }
@@ -142,6 +150,10 @@ public class BingoCanvas : MonoBehaviour
             GameObject.Destroy(child.gameObject);
 
         bingoDirector.StartNewRound();
+
+        if (audioSource)
+            audioSource.Stop();
+
         Bingo.SetToDefaultSpeed();
     }
 
