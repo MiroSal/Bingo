@@ -39,7 +39,6 @@ public class BingoHost : MonoBehaviour
     private HostStateEnum state;
 
     private NumberAnnouncer numberAnnouncer = null;
-    private ParticleSystem smokeParticleSystem = null;
 
     void OnDrawGizmosSelected()
     {

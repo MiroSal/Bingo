@@ -84,20 +84,34 @@ public class BingoCanvas : MonoBehaviour
     public void AddRoundWinner(string Name, Sprite AvatarIcon)
     {
         //check if winner is already added
-        RoundWinner[] winners = Competitors.GetComponentsInChildren<RoundWinner>();
-        foreach (RoundWinner winner in winners)
+        if (Competitors)
         {
-            if (winner && winner.text.text.ToString() == Name)
+            if (Competitors.transform.childCount > 0)
             {
-                return;
+                RoundWinner[] winners = Competitors.GetComponentsInChildren<RoundWinner>();
+                if (winners.Length > 0)
+                {
+                    foreach (RoundWinner winner in winners)
+                    {
+                        if (winner && winner.text.text.ToString() == Name)
+                        {
+                            return;
+                        }
+                    }
+                }
             }
-        }
 
-        GameObject roundWinner = Instantiate(RoundWinner);
-        if (roundWinner)
-        {
-            roundWinner.GetComponent<RoundWinner>().Setup(Name, AvatarIcon);
-            roundWinner.transform.SetParent(Competitors.transform, false);//set as child.
+            //Add winner
+            GameObject roundWinner = Instantiate(RoundWinner);
+            if (roundWinner)
+            {
+                RoundWinner roundWinnerComp = roundWinner.GetComponent<RoundWinner>();
+                if (roundWinnerComp)
+                {
+                    roundWinnerComp.Setup(Name, AvatarIcon);
+                }
+                roundWinner.transform.SetParent(Competitors.transform, false);//set as child.
+            }
         }
 
         if (PlayerPrefs.HasKey("Money") && PlayerPrefs.HasKey("AvatarName"))
@@ -108,7 +122,7 @@ public class BingoCanvas : MonoBehaviour
                 if (bingoDirector)
                 {
                     money += bingoDirector.GetCurrentRoundsWinnings();
-                }               
+                }
                 PlayerPrefs.SetFloat("Money", money);
                 PlayerPrefs.Save();
             }
