@@ -16,7 +16,8 @@ public class Money : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("Money"))
         {
-            MoneyText.text = PlayerPrefs.GetFloat("Money").ToString();
+            double money = System.Math.Round(PlayerPrefs.GetFloat("Money"),1);            
+            MoneyText.text = "" + money;
         }
         else
         {

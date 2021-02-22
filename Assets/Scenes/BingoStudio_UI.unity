@@ -400,6 +400,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1764244785}
     m_Modifications:
+    - target: {fileID: 1701002146196581952, guid: c7f91f0a25344704c88da59c013c30fd,
+        type: 3}
+      propertyPath: LoopingInterval
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2812927183697593231, guid: c7f91f0a25344704c88da59c013c30fd,
         type: 3}
       propertyPath: m_Pivot.x
