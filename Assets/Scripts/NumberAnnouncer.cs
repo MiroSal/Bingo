@@ -42,6 +42,14 @@ public class NumberAnnouncer : MonoBehaviour
             if (ball == null) { Debug.Log("objt was null"); return; }
             possibleNumbers.RemoveAt(random);//Remove used number from possibleNumbers
 
+            int childCount = transform.childCount;
+            if (transform.childCount >= 45)
+            {
+                GameObject child = transform.GetChild(0).gameObject;
+                if (child)
+                    GameObject.Destroy(child);
+            }
+
             ball.transform.SetParent(this.transform, false);//Set ball to studio monitor
             Text text = ball.GetComponentInChildren<Text>();
 
