@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public class ArrayLayout
@@ -15,6 +17,7 @@ public class ArrayLayout
     public rowData[] rows = new rowData[5]; //5x5 grid
 }
 
+#if UNITY_EDITOR  
 /// <summary>
 /// Make booleans appear in horizontal lines in inspector
 /// </summary>
@@ -54,7 +57,7 @@ public class CustPropertyDrawer : PropertyDrawer
         return 18f * 8;
     }
 }
-
+#endif
 /// <summary>
 /// ScriptableObject for Setting current Gamemodes wanted lines
 /// </summary>
@@ -62,6 +65,12 @@ public class CustPropertyDrawer : PropertyDrawer
 [CreateAssetMenu(fileName = "LineData", menuName = "ScriptableObjects/LineData", order = 1)]
 public class LinesData : ScriptableObject
 {
+    /// <summary>
+    /// AMount of winnings from round win
+    /// </summary>
+    [SerializeField]
+    private float RoundWinnings = 0;
+
     [SerializeField]
     private ArrayLayout[] bingoLineData = new ArrayLayout[1];
 
@@ -70,4 +79,8 @@ public class LinesData : ScriptableObject
         return bingoLineData;
     }
 
+    public float GetRoundWinnings()
+    {
+        return RoundWinnings;
+    }
 }

@@ -26,7 +26,6 @@ public class BingoDirector : MonoBehaviour
     /// Current GameModes LineData.
     /// GameMode can have multiple rounds and on each round wantedlines are different
     /// </summary>
-    [SerializeField]
     private List<LinesData> currentGameModeLineDatas = new List<LinesData>();
 
     /// <summary>
@@ -104,6 +103,15 @@ public class BingoDirector : MonoBehaviour
         return new Dictionary<int, List<int>>();
     }
 
+    public float GetCurrentRoundsWinnings()
+    {
+        if (currentGameModeLineDatas.Count > Roundindex)
+        {
+            return currentGameModeLineDatas[Roundindex].GetRoundWinnings();
+        }
+        return 0;
+    }
+
     /// <summary>
     /// Broadcast new number
     /// </summary>
@@ -161,6 +169,12 @@ public class BingoDirector : MonoBehaviour
         {
             StartNewRoundDelegate();
         }
+    }
+
+    public void SetNewGameMode(List<LinesData> newGameModeLineDatas)
+    {
+        currentGameModeLineDatas = newGameModeLineDatas;
+        SortWantedLines();
     }
 
     public void EndGameMode()

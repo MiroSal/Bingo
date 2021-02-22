@@ -26,6 +26,12 @@ public class BingoCanvas : MonoBehaviour
     //BingoDirector
     private BingoDirector bingoDirector = null;
 
+    //Winnings
+    private Text MoneyText = null;
+
+    //Audio when Bingo is announced
+    private AudioSource audioSource;
+
     private void Awake()
     {
         canvas = GetComponent<Canvas>();
@@ -42,7 +48,11 @@ public class BingoCanvas : MonoBehaviour
 
         Competitors = gameObject.transform.Find("RoundWinners").gameObject;
 
+        MoneyText = gameObject.transform.Find("Money").GetComponentInChildren<Text>();
+
         bingoDirector = FindObjectOfType<BingoDirector>();
+
+        audioSource = GetComponent<AudioSource>();
 
         BingoDirector.BingoFoundDelegate += BingoFound;//Bind to delegate
         BingoDirector.AnnounceRoundWinnerDelegate += AddRoundWinner;//Bind to delegate
@@ -56,6 +66,9 @@ public class BingoCanvas : MonoBehaviour
         if (canvas)
             canvas.enabled = true;
 
+        if (MoneyText && bingoDirector)
+            MoneyText.text = bingoDirector.GetCurrentRoundsWinnings().ToString();
+
         if (wasLastRound)
         {
             if (MainMenuButton)
@@ -64,6 +77,9 @@ public class BingoCanvas : MonoBehaviour
             if (ContinueButton)
                 ContinueButton.SetActive(false);
         }
+
+        if (audioSource)
+            audioSource.Play();
 
         Bingo.PauseGame();
     }
@@ -76,20 +92,48 @@ public class BingoCanvas : MonoBehaviour
     public void AddRoundWinner(string Name, Sprite AvatarIcon)
     {
         //check if winner is already added
-        RoundWinner[] winners = Competitors.GetComponentsInChildren<RoundWinner>();
-        foreach (RoundWinner winner in winners)
+        if (Competitors)
         {
-            if (winner.text.text.ToString() == Name)
+            if (Competitors.transform.childCount > 0)
             {
-                return;
+                RoundWinner[] winners = Competitors.GetComponentsInChildren<RoundWinner>();
+                if (winners.Length > 0)
+                {
+                    foreach (RoundWinner winner in winners)
+                    {
+                        if (winner && winner.text.text.ToString() == Name)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            //Add winner
+            GameObject roundWinner = Instantiate(RoundWinner);
+            if (roundWinner)
+            {
+                RoundWinner roundWinnerComp = roundWinner.GetComponent<RoundWinner>();
+                if (roundWinnerComp)
+                {
+                    roundWinnerComp.Setup(Name, AvatarIcon);
+                }
+                roundWinner.transform.SetParent(Competitors.transform, false);//set as child.
             }
         }
 
-        GameObject roundWinner = Instantiate(RoundWinner);
-        if (roundWinner)
+        if (PlayerPrefs.HasKey("Money") && PlayerPrefs.HasKey("AvatarName"))
         {
-            roundWinner.GetComponent<RoundWinner>().Setup(Name, AvatarIcon);
-            roundWinner.transform.SetParent(Competitors.transform, false);//set as child.
+            if (Name == PlayerPrefs.GetString("AvatarName"))
+            {
+                float money = PlayerPrefs.GetFloat("Money");
+                if (bingoDirector)
+                {
+                    money += bingoDirector.GetCurrentRoundsWinnings();
+                }
+                PlayerPrefs.SetFloat("Money", money);
+                PlayerPrefs.Save();
+            }
         }
     }
 
@@ -106,6 +150,10 @@ public class BingoCanvas : MonoBehaviour
             GameObject.Destroy(child.gameObject);
 
         bingoDirector.StartNewRound();
+
+        if (audioSource)
+            audioSource.Stop();
+
         Bingo.SetToDefaultSpeed();
     }
 
